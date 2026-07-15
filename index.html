@@ -1,18 +1,971 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A decision-grade research workstation for AI-native drug discovery." />
-    <meta property="og:title" content="Atlas Drug AI — Investment Intelligence" />
-    <meta property="og:description" content="Investment intelligence for AI-native drug discovery." />
-    <meta property="og:image" content="./og.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="./favicon.svg" />
-    <title>Atlas Drug AI — Investment Intelligence</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Drug Discovery — Work Station</title>
+<style>
+  :root{
+    --navy:#1f3864; --blue:#2e5496; --accent:#3b6db3;
+    --bg:#f6f7fb; --card:#ffffff; --line:#e4e8f0;
+    --text:#1e2430; --muted:#6b7280; --soft:#eef2f9; --amber:#fff8e6; --amberln:#f0e0a8;
+    --green:#187254; --red:#a44242; --ink:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px;line-height:1.6}
+  a{color:var(--accent)}
+  .sidebar{width:250px;background:var(--navy);color:#dfe6f5;position:fixed;top:0;bottom:0;left:0;
+    display:flex;flex-direction:column;padding:22px 0;overflow-y:auto}
+  .brand{padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+  .brand h1{font-size:16px;color:#fff;font-weight:600;line-height:1.3}
+  .brand span{font-size:12px;color:#9fb3d9}
+  .nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#8ea4cc;padding:14px 22px 6px}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 22px;color:#cdd8ef;cursor:pointer;
+    font-size:14px;border-left:3px solid transparent;transition:.15s}
+  .nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav a.active{background:rgba(255,255,255,.10);color:#fff;border-left-color:#7ea6e8;font-weight:500}
+  .nav a .ic{width:18px;text-align:center;opacity:.85}
+  .side-foot{margin-top:auto;padding:16px 22px 0;font-size:11px;color:#8ea4cc;border-top:1px solid rgba(255,255,255,.12)}
+  .main{margin-left:250px;flex:1;padding:88px 40px 60px;max-width:1180px}
+  .ownerbar{position:fixed;left:250px;right:0;top:0;z-index:20;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
+    padding:12px 40px;box-shadow:0 8px 24px rgba(31,56,100,.06)}
+  .ownerbar .status{font-size:12px;color:var(--muted);margin-right:auto}
+  .ownerbar button,.ownerbar a.button{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;
+    padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;line-height:1}
+  .ownerbar button.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lang-switch{display:flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:2px}
+  .lang-switch button{border:0;background:transparent;border-radius:7px;padding:6px 9px;color:var(--muted)}
+  .lang-switch button.active{background:var(--navy);color:#fff}
+  .page{display:none;animation:fade .25s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2.page-title{font-size:24px;font-weight:600;color:var(--navy);margin-bottom:4px}
+  .page-sub{color:var(--muted);margin-bottom:26px;font-size:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+  .card h3{font-size:15px;color:var(--navy);margin-bottom:10px;font-weight:600}
+  .card p{margin-bottom:8px}
+  .kv{display:grid;grid-template-columns:190px 1fr;gap:6px 18px;margin-top:6px}
+  .kv dt{font-weight:600;color:var(--navy)}
+  .kv dd{color:#333}
+  .stagegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:6px}
+  .stage{background:var(--soft);border-radius:10px;padding:14px}
+  .stage .n{font-size:12px;color:var(--accent);font-weight:700}
+  .stage .t{font-weight:600;color:var(--navy);margin:2px 0 4px;font-size:14px}
+  .stage .d{font-size:12.5px;color:#4b5563;line-height:1.5}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+  .toolbar input,.toolbar select{padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:13px;background:#fff;color:var(--text)}
+  .toolbar input{flex:1;min-width:180px}
+  .count{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .co{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+  .co-top{cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .co-name{font-size:16px;font-weight:600;color:var(--navy)}
+  .chev{color:var(--muted);font-size:13px;flex-shrink:0;transition:.2s;margin-top:3px}
+  .co.open .chev{transform:rotate(90deg)}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--soft);color:var(--blue);font-weight:600}
+  .tag.stage{background:#e7f3ec;color:#2f7d4f}
+  .tag.country{background:#f3ecfa;color:#6b3fa0}
+  .co-focus{margin-top:9px;color:#374151;font-size:13.5px}
+  .detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .co.open .detail{display:block}
+  .drow{display:grid;grid-template-columns:120px 1fr;gap:4px 16px;margin-bottom:9px;font-size:13px}
+  .drow .lb{color:var(--accent);font-weight:600}
+  .drow .vl{color:#374151}
+  .src{font-size:12px;color:var(--muted);margin-top:8px}
+  .src a{margin-right:10px}
+  .newsitem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:11px;display:grid;grid-template-columns:110px 1fr;gap:16px}
+  .newsitem .date{color:var(--accent);font-weight:600;font-size:12.5px}
+  .newsitem .body{font-size:13.5px}
+  .newsitem .body b{color:var(--navy)}
+  .newsitem .src{margin-top:5px}
+  .rel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+  .rel h3{color:var(--navy);font-size:15px;margin-bottom:6px}
+  .rel p{font-size:13.5px;color:#374151}
+  .gl{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:9px}
+  .gl b{color:var(--navy)}
+  .gl span{display:block;color:#4b5563;font-size:13px;margin-top:2px}
+  .note{background:var(--amber);border:1px solid var(--amberln);border-radius:10px;padding:13px 16px;font-size:13px;color:#6b5a1e;margin-bottom:18px}
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+  .metric{background:var(--soft);border-radius:10px;padding:14px}
+  .metric .v{font-size:20px;font-weight:700;color:var(--navy)}
+  .metric .l{font-size:12px;color:var(--muted)}
+  .invest-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:18px}
+  .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+  table{width:100%;border-collapse:collapse;min-width:760px}
+  th,td{text-align:left;border-bottom:1px solid var(--line);padding:11px 12px;font-size:12.5px;vertical-align:top}
+  th{background:#f8fafc;color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  .score{display:inline-flex;align-items:center;justify-content:center;width:30px;height:24px;border-radius:7px;
+    background:#e7f3ec;color:var(--green);font-weight:800}
+  .risk{color:var(--red);font-weight:700}
+  .quote{font-weight:700;color:var(--ink)}
+  .watchlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .watch{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px}
+  .watch b{display:block;color:var(--navy);margin-bottom:6px}
+  .watch span{font-size:12.5px;color:#4b5563}
+  .chat-shell{display:grid;grid-template-columns:1fr 330px;gap:16px}
+  .chatbox{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+  .chatlog{height:360px;overflow:auto;padding:16px;background:linear-gradient(#fbfcff,#fff)}
+  .msg{max-width:82%;padding:10px 12px;border-radius:12px;margin-bottom:10px;font-size:13px}
+  .msg.ai{background:var(--soft);color:#26334c}
+  .msg.you{background:var(--navy);color:#fff;margin-left:auto}
+  .chatinput{display:flex;gap:8px;border-top:1px solid var(--line);padding:10px}
+  .chatinput textarea{flex:1;min-height:44px;max-height:110px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:9px;font:inherit}
+  .chatinput button{border:0;border-radius:9px;background:var(--navy);color:#fff;padding:0 15px;font-weight:700}
+  .promptbtn{display:block;width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px;
+    text-align:left;margin-bottom:8px;color:var(--navy);font-weight:700;cursor:pointer;font-size:12.5px}
+  .editpanel textarea{width:100%;min-height:180px;border:1px solid var(--line);border-radius:10px;padding:10px;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .ai-config{margin-bottom:12px}
+  .field{margin-bottom:9px}
+  .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin-bottom:4px}
+  .field input,.field select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit;color:var(--text);background:#fff}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px}
+  .smallbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;color:var(--navy);font-size:12px;font-weight:800;cursor:pointer}
+  .smallbtn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .secure-note{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:10px;color:#475569;font-size:12px;line-height:1.5;margin-bottom:10px}
+  .embed-frame{width:100%;height:360px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-top:12px;display:none}
+  .embed-frame.active{display:block}
+  .chat-disabled{opacity:.62}
+  .mini{font-size:12px;color:var(--muted);margin-top:7px}
+  @media(max-width:900px){.invest-grid,.chat-shell{grid-template-columns:1fr}.ownerbar{left:0;padding:10px 18px}.main{padding-top:96px}}
+  @media(max-width:720px){.sidebar{width:100%;position:static;height:auto}.main{margin-left:0;padding:22px}.ownerbar{position:static;flex-wrap:wrap}.kv,.drow,.newsitem{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="ownerbar">
+  <div class="status" data-i18n="ownerStatus">Owner controls · local HTML · data snapshot Jul 10 2026</div>
+  <div class="lang-switch" aria-label="Language">
+    <button id="langEn" class="active" onclick="setLang('en')">EN</button>
+    <button id="langZh" onclick="setLang('zh')">中文</button>
+  </div>
+  <button onclick="showPage('dashboard')" data-i18n="ownerDashboard">Investor dashboard</button>
+  <button onclick="showPage('chat')" data-i18n="ownerChat">AI chat / update</button>
+  <button class="primary" onclick="downloadHtml()" data-i18n="ownerExport">Export page</button>
+</div>
+
+<nav class="sidebar">
+  <div class="brand">
+    <h1>AI Drug Discovery</h1>
+    <span id="upd" data-i18n="updated">Work Station · updated Jul 10 2026</span>
+  </div>
+  <div class="nav-label" data-i18n="navDaily">Daily</div>
+  <div class="nav">
+    <a data-p="dashboard"><span class="ic">▣</span> <span data-i18n="navDashboard">Investor dashboard</span></a>
+    <a data-p="news" class="active"><span class="ic">◆</span> <span data-i18n="navNews">News feed</span></a>
+  </div>
+  <div class="nav-label" data-i18n="navLearn">Learn</div>
+  <div class="nav">
+    <a data-p="overview"><span class="ic">◆</span> <span data-i18n="navOverview">Overview / 101</span></a>
+    <a data-p="pipeline"><span class="ic">◆</span> <span data-i18n="navPipeline">The pipeline</span></a>
+    <a data-p="lanes"><span class="ic">◆</span> <span data-i18n="navLanes">Technical lanes</span></a>
+  </div>
+  <div class="nav-label" data-i18n="navTrack">Track</div>
+  <div class="nav">
+    <a data-p="companies"><span class="ic">●</span> <span data-i18n="navCompanies">Companies</span></a>
+    <a data-p="relationships"><span class="ic">◈</span> <span data-i18n="navRelationships">Relationships</span></a>
+    <a data-p="chat"><span class="ic">✎</span> <span data-i18n="navChat">AI chat / edit</span></a>
+    <a data-p="glossary"><span class="ic">▸</span> <span data-i18n="navGlossary">Glossary</span></a>
+  </div>
+  <div class="side-foot" data-i18n="sideFoot">Snapshot — figures move fast. Ask Codex/AI to refresh public data before investment decisions.</div>
+</nav>
+
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <section class="page" id="dashboard">
+    <h2 class="page-title" data-i18n="dashTitle">PE investor dashboard</h2>
+    <p class="page-sub" data-i18n="dashSub">Public comps, IPO status, platform/product depth, and diligence notes in one view.</p>
+    <div class="note" data-i18n="dashNote">Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.</div>
+    <div class="metrics">
+      <div class="metric"><div class="v">6</div><div class="l" data-i18n="dashMetric1">Public / IPO-traded comps tracked</div></div>
+      <div class="metric"><div class="v">8</div><div class="l" data-i18n="dashMetric2">Private AI-native targets</div></div>
+      <div class="metric"><div class="v">Phase III</div><div class="l" data-i18n="dashMetric3">Most advanced AI-originated drug stage</div></div>
+      <div class="metric"><div class="v">Lilly</div><div class="l" data-i18n="dashMetric4">Most active strategic buyer/partner</div></div>
+    </div>
+    <div class="invest-grid">
+      <div class="card"><h3 data-i18n="investScreen">Investability screen</h3><div class="tablewrap"><table id="investTable"></table></div></div>
+      <div class="card"><h3 data-i18n="diligenceLens">PE diligence lens</h3>
+        <div class="watchlist">
+          <div class="watch"><b data-i18n="watch1Title">Best near-term public comp</b><span data-i18n="watch1Body">Recursion: liquid pure-play, but clinical execution and cash burn matter more than platform narrative.</span></div>
+          <div class="watch"><b data-i18n="watch2Title">Best late-stage AI-originated asset</b><span data-i18n="watch2Body">Insilico: Rentosertib in Phase III for IPF; check trial geography, endpoints, and partner economics.</span></div>
+          <div class="watch"><b data-i18n="watch3Title">Strategic acquirer signal</b><span data-i18n="watch3Body">Lilly, Roche, Novartis and Bayer deals validate platforms, but milestone-heavy deal values can overstate near-term economics.</span></div>
+          <div class="watch"><b data-i18n="watch4Title">Exit timing</b><span data-i18n="watch4Body">Private names need clear clinical proof or platform revenue. IPO windows are open but selective for biotech.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><h3 data-i18n="watchlistPriorities">Watchlist priorities</h3><div id="watchlist"></div></div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="page active" id="news">
+    <h2 class="page-title" data-i18n="newsTitle">AI drug &amp; healthcare — news feed</h2>
+    <p class="page-sub" data-i18n="newsSub">Most recent first. Refreshed by the daily update task.</p>
+    <div class="metrics">
+      <div class="metric"><div class="v">~$2.6B</div><div class="l" data-i18n="newsMetric1">AI drug-discovery market (2026)</div></div>
+      <div class="metric"><div class="v">173+</div><div class="l" data-i18n="newsMetric2">AI-originated programs in clinic</div></div>
+      <div class="metric"><div class="v">80–90%</div><div class="l" data-i18n="newsMetric3">AI molecule Phase I success (vs ~52% historical)</div></div>
+      <div class="metric"><div class="v">0</div><div class="l" data-i18n="newsMetric4">Full FDA approvals yet (first expected 2026–27)</div></div>
+    </div>
+    <div id="newslist"></div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section class="page" id="overview">
+    <h2 class="page-title" data-i18n="overviewTitle">What is AI drug discovery?</h2>
+    <p class="page-sub" data-i18n="overviewSub">The concept, the problem, and why it's happening now.</p>
+    <div class="card"><h3 data-i18n="overviewOneTitle">In one line</h3>
+      <p data-i18n="overviewOneBody">Using machine learning and generative AI to find, design, and test new medicines faster and cheaper than traditional trial-and-error lab work.</p></div>
+    <div class="card"><h3 data-i18n="overviewConceptTitle">The concept</h3>
+      <dl class="kv">
+        <dt data-i18n="overviewProblem">The problem</dt><dd data-i18n="overviewProblemBody">A traditional drug takes ~10–15 years and often over $1–2 billion, and ~90% of candidates fail in clinical trials.</dd>
+        <dt data-i18n="overviewIdea">The core idea</dt><dd data-i18n="overviewIdeaBody">Biology produces huge datasets (genomes, proteins, cell images, chemical libraries). AI learns the patterns to predict which molecules will work — replacing much slow physical screening with computation.</dd>
+        <dt data-i18n="overviewPayoff">The payoff</dt><dd data-i18n="overviewPayoffBody">Higher hit rates and compressed timelines — early data shows 80–90% Phase I success vs the ~52% historical average.</dd>
+        <dt data-i18n="overviewWhyNow">Why now (2024–26)</dt><dd data-i18n="overviewWhyNowBody">Three things converged: protein-structure prediction (AlphaFold 3), generative molecule/protein models (RFdiffusion, Chemistry42), and cheap GPU compute at scale (NVIDIA + Lilly, Roche…).</dd>
+      </dl></div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section class="page" id="pipeline">
+    <h2 class="page-title" data-i18n="pipelineTitle">What it includes — the pipeline</h2>
+    <p class="page-sub" data-i18n="pipelineSub">Where AI plugs into the six stages of making a drug.</p>
+    <div class="card"><div class="stagegrid">
+      <div class="stage"><div class="n" data-i18n="stage1">STAGE 1</div><div class="t" data-i18n="stage1Title">Target identification</div><div class="d" data-i18n="stage1Body">Find the biological "lever" of a disease (usually a protein/gene). AI mines genomic & disease data. e.g. Insilico's PandaOmics.</div></div>
+      <div class="stage"><div class="n" data-i18n="stage2">STAGE 2</div><div class="t" data-i18n="stage2Title">Hit discovery</div><div class="d" data-i18n="stage2Body">Virtual screening scans huge compound libraries computationally instead of testing millions physically.</div></div>
+      <div class="stage"><div class="n" data-i18n="stage3">STAGE 3</div><div class="t" data-i18n="stage3Title">Lead optimization</div><div class="d" data-i18n="stage3Body">Refine candidates for potency, safety & drug-like properties. Generative AI designs new molecules. e.g. Chemistry42, RFdiffusion.</div></div>
+      <div class="stage"><div class="n" data-i18n="stage4">STAGE 4</div><div class="t" data-i18n="stage4Title">Preclinical (ADMET)</div><div class="d" data-i18n="stage4Body">Predict absorption, metabolism & toxicity to kill bad candidates early. FDA now piloting an AI liver-injury (DILI) predictor.</div></div>
+      <div class="stage"><div class="n" data-i18n="stage5">STAGE 5</div><div class="t" data-i18n="stage5Title">Clinical trials</div><div class="d" data-i18n="stage5Body">AI helps design trials, recruit patients, pick biomarkers & predict outcomes — the 2026 proving ground.</div></div>
+      <div class="stage"><div class="n" data-i18n="stage6">STAGE 6</div><div class="t" data-i18n="stage6Title">Manufacturing</div><div class="d" data-i18n="stage6Body">Digital twins & AI optimize production and formulation (e.g., Roche/NVIDIA AI factory).</div></div>
+    </div></div>
+  </section>
+
+  <!-- LANES -->
+  <section class="page" id="lanes">
+    <h2 class="page-title" data-i18n="lanesTitle">The main technical lanes</h2>
+    <p class="page-sub" data-i18n="lanesSub">Different bets on how AI best finds drugs — and who leads each.</p>
+    <div class="card"><h3 data-i18n="lane1Title">Structure foundation models</h3><p data-i18n="lane1Body">Predict 3D protein/molecule structures & how they bind (AlphaFold-style). <b>Leaders:</b> Isomorphic Labs (IsoDDE), Chai (Chai-1), Boltz (open-source).</p></div>
+    <div class="card"><h3 data-i18n="lane2Title">Biology data / phenomics</h3><p data-i18n="lane2Body">Run massive automated cell/lab experiments and learn from the images & readouts. <b>Leaders:</b> Recursion, insitro, Eikon.</p></div>
+    <div class="card"><h3 data-i18n="lane3Title">Generative chemistry</h3><p data-i18n="lane3Body">Design new molecules from scratch to hit a target. <b>Leaders:</b> Insilico Medicine (Chemistry42), Iambic (NeuralPLexer).</p></div>
+    <div class="card"><h3 data-i18n="lane4Title">Protein design</h3><p data-i18n="lane4Body">Build entirely new proteins/binders. <b>Leaders:</b> Xaira (RFdiffusion), Generate:Biomedicines.</p></div>
+    <div class="card"><h3 data-i18n="lane5Title">Physics + AI simulation</h3><p data-i18n="lane5Body">Combine quantum/physics simulation with ML for accuracy. <b>Leader:</b> XtalPi.</p></div>
+    <div class="card"><h3 data-i18n="lane6Title">Big pharma + compute</h3><p data-i18n="lane6Body">Giants buying GPU capacity & partnering with AI-natives. <b>Leaders:</b> Eli Lilly (+NVIDIA), Roche (+NVIDIA), Novartis (+Isomorphic).</p></div>
+  </section>
+
+  <!-- COMPANIES -->
+  <section class="page" id="companies">
+    <h2 class="page-title" data-i18n="companiesTitle">Company tracker</h2>
+    <p class="page-sub" data-i18n="companiesSub">Search, filter, and click any company to expand pipeline, products, models &amp; relationships.</p>
+    <div class="note" data-i18n="companiesNote">Snapshot as of July 10, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.</div>
+    <div class="toolbar">
+      <input id="search" placeholder="Search companies, drug, model, focus…">
+      <select id="fType"><option value="" data-i18n="allTypes">All types</option></select>
+      <select id="fCountry"><option value="" data-i18n="allCountries">All countries</option></select>
+      <select id="fStage"><option value="" data-i18n="allStages">All stages</option></select>
+    </div>
+    <div class="count" id="count"></div>
+    <div id="colist"></div>
+  </section>
+
+  <!-- RELATIONSHIPS -->
+  <section class="page" id="relationships">
+    <h2 class="page-title" data-i18n="relationshipsTitle">Relationships &amp; cross-checks</h2>
+    <p class="page-sub" data-i18n="relationshipsSub">How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.</p>
+    <div id="rellist"></div>
+  </section>
+
+  <!-- CHAT / EDIT -->
+  <section class="page" id="chat">
+    <h2 class="page-title" data-i18n="chatTitle">AI chat / owner edit bar</h2>
+    <p class="page-sub" data-i18n="chatSub">Use this page as the website's command center: ask for updates, draft new company entries, and save local notes.</p>
+    <div class="chat-shell">
+      <div class="chatbox">
+        <div class="chatlog" id="chatlog">
+          <div class="msg ai" data-i18n="chatWelcome">I am a local demo assistant inside this HTML. For real AI chat, connect this panel to an OpenAI/Codex backend endpoint. For now I can draft update instructions, summarize the tracked company data, and prepare text you can paste into Codex.</div>
+        </div>
+        <div class="chatinput">
+          <textarea id="chatText" placeholder="Ask: update Insilico stock info, add a company, compare RXRX vs 3696..."></textarea>
+          <button onclick="chatSend()" data-i18n="send">Send</button>
+        </div>
+      </div>
+      <div class="card editpanel"><h3 data-i18n="aiAccessTitle">AI access</h3>
+        <div class="secure-note" data-i18n="aiSecurityNote">Use a server endpoint or external chatbot link. Do not paste private API keys into a public HTML page.</div>
+        <div class="ai-config">
+          <div class="field">
+            <label for="aiMode" data-i18n="aiModeLabel">Chat mode</label>
+            <select id="aiMode">
+              <option value="demo" data-i18n="aiModeDemo">Local demo replies</option>
+              <option value="api" data-i18n="aiModeApi">Use my API endpoint</option>
+              <option value="embed" data-i18n="aiModeEmbed">Embed another chatbot</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="apiEndpoint" data-i18n="apiEndpointLabel">API endpoint URL</label>
+            <input id="apiEndpoint" placeholder="https://your-domain.com/api/chat">
+          </div>
+          <div class="field">
+            <label for="embedUrl" data-i18n="embedUrlLabel">External chatbot URL</label>
+            <input id="embedUrl" placeholder="https://chatbot.example.com/share/...">
+          </div>
+          <div class="btnrow">
+            <button class="smallbtn primary" onclick="saveAiSettings()" data-i18n="saveAiSettings">Save AI settings</button>
+            <button class="smallbtn" onclick="testAiConnection()" data-i18n="testAiSettings">Test</button>
+            <button class="smallbtn" onclick="clearAiSettings()" data-i18n="clearAiSettings">Clear</button>
+          </div>
+          <iframe id="embedFrame" class="embed-frame" title="External AI chatbot"></iframe>
+        </div>
+        <h3 data-i18n="updatePad">Website update pad</h3>
+        <button class="promptbtn" onclick="quickPromptKey('marketPromptText')" data-i18n="promptMarket">Refresh market data prompt</button>
+        <button class="promptbtn" onclick="quickPromptKey('addCompanyPromptText')" data-i18n="promptAdd">Add company prompt</button>
+        <button class="promptbtn" onclick="quickPromptKey('memoPromptText')" data-i18n="promptMemo">Investment memo prompt</button>
+        <textarea id="notes" placeholder="Owner notes are saved in this browser only."></textarea>
+        <div class="mini" data-i18n="notesHelp">Notes autosave to localStorage. Static websites cannot truly self-update unless connected to a backend, CMS, GitHub workflow, or hosted database.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="page" id="glossary">
+    <h2 class="page-title" data-i18n="glossaryTitle">Glossary</h2>
+    <p class="page-sub" data-i18n="glossarySub">Plain-language definitions of the key terms.</p>
+    <div id="gllist"></div>
+  </section>
+
+</main>
+
+<script>
+const companies = [
+ {name:"Isomorphic Labs",country:"UK",type:"AI-native",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.isomorphiclabs.com/",score:78,valuation:"Private; $2.1B Series B in May 2026",lane:"Structure foundation models",fund:"$2.1B Series B (May 2026) + ~$600M prior",focus:"Drug design via AlphaFold-derived models; partners with big pharma rather than owning a full pipeline.",
+  pipeline:"Oncology & immunology programs. First AI-designed drugs expected to enter clinical trials by end of 2026 (no human dosing yet).",
+  products:"IsoDDE — the Isomorphic Drug Design Engine; co-developed AlphaFold 3.",
+  models:"AlphaFold 3 (with DeepMind) + IsoDDE, which hits 50% on the hardest protein–ligand benchmark vs 23% for AlphaFold 3.",
+  rel:"Spun out of Google DeepMind (Alphabet). Deals: Eli Lilly (>$1.7B), Novartis (~$1.2B). $2.1B Series B led by Thrive Capital.",
+  thesis:"Top-tier platform and strategic validation, but no direct public entry except Alphabet exposure and no human efficacy data yet.",
+  src:[["Isomorphic — our tech","https://www.isomorphiclabs.com/our-tech"],["ClinicalTrialsArena","https://www.clinicaltrialsarena.com/news/isomorphic-labs-prepares-trials-ai-designed-drugs/"]]},
+ {name:"Recursion",country:"USA",type:"AI-native",stage:"IPO (NASDAQ: RXRX)",ticker:"NASDAQ: RXRX",ipo:"Apr 20 2021; IPO price $18",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/RXRX",score:70,valuation:"Public pure-play; market cap and cash runway should be refreshed",lane:"Biology data / phenomics",fund:"Public; absorbed Exscientia capital",focus:"Phenomics — automated cell-image experiments at massive scale; merged with Exscientia.",
+  pipeline:"REC-4881 (MEK1/2, familial adenomatous polyposis) — Phase 2 efficacy signals, FDA registrational path talks, update 2H26. REC-1245 (RBM39 degrader, solid tumors/lymphoma) — early data, well tolerated. REC-617 (CDK7 inhibitor) — safety/PK data 1H27. Halted 4 programs to focus on oncology + rare disease.",
+  products:"Recursion OS (Recursion Operating System) — closed-loop AI + wet-lab platform.",
+  models:"Recursion OS AI models; AI-driven precision molecule-design platform.",
+  rel:"Merged with/absorbed Exscientia (trans-Atlantic combination). Historic pharma partners include Roche/Genentech and Bayer.",
+  thesis:"Most investable listed AI-drug pure play, but valuation depends on clinical readouts rather than platform scale alone.",
+  src:[["Recursion IR","https://ir.recursion.com/news-releases"],["GEN — pipeline refocus","https://www.genengnews.com/topics/artificial-intelligence/recursion-halts-four-pipeline-programs-sharpening-cancer-rare-disease-focus/"]]},
+ {name:"Insilico Medicine",country:"Hong Kong / China",type:"AI-native",stage:"IPO (HKEX: 3696)",ticker:"HKEX: 3696",ipo:"Late Dec 2025; raised about $293M",quote:"Refresh HK quote",quoteUrl:"https://www.hkex.com.hk/Market-Data/Securities-Prices/Equities/Equities-Quote?sym=3696&sc_lang=en",score:82,valuation:"Public HK-listed AI-drug developer",lane:"Generative chemistry",fund:"~$293M IPO + >$500M private (~$800M)",focus:"End-to-end generative platform; most productized AI-native; owns its clinical pipeline.",
+  pipeline:"Rentosertib (ISM001-055), a TNIK inhibitor for idiopathic pulmonary fibrosis — Phase III initiated Jul 7 2026. It's the first drug where BOTH the target and the molecule were AI-generated. Positive Phase IIa published in Nature Medicine (Jun 2025).",
+  products:"Pharma.AI suite: PandaOmics / Biology42 (target ID), Chemistry42 (generative chemistry), inClinico (trial prediction).",
+  models:"Generative chemistry (Chemistry42) + AI biology engine (PandaOmics).",
+  rel:"Eli Lilly deal worth up to $2.75B for preclinical candidates (worldwide rights). Listed on HKEX Dec 2025.",
+  thesis:"Strongest clinical-stage AI-originated story; diligence should focus on Phase III design, China/US regulatory path, and economics retained after Lilly deal.",
+  src:[["Insilico — Phase III news","https://insilico.com/news/xmjsn4l091-insilico-initiates-phase-iii-clinical-tr"],["Nature Medicine Phase IIa","https://insilico.com/news/tnrecuxsc1-insilico-announces-nature-medicine-publi"]]},
+ {name:"Eikon Therapeutics",country:"USA",type:"AI-native",stage:"IPO (Feb 2026)",ticker:"Public; ticker needs refresh",ipo:"Feb 2026; priced at $18 and raised about $381M",quote:"Refresh live quote",quoteUrl:"https://www.google.com/search?q=Eikon+Therapeutics+stock+price",score:62,valuation:"Newly public; early post-IPO trading weak in reports",lane:"Biology data / phenomics",fund:"~$381M IPO (Feb 2026)",focus:"Super-resolution single-molecule imaging + AI to watch proteins move inside living cells.",
+  pipeline:"Oncology-led pipeline built from live-cell imaging targets.",
+  products:"Single-molecule imaging platform (industrial-scale microscopy).",
+  models:"Imaging + machine-learning analysis of protein dynamics.",
+  rel:"Led by former Merck R&D head Roger Perlmutter. IPO'd Feb 2026 alongside Generate.",
+  thesis:"High-quality team and platform, but PE underwriting needs product-market proof beyond research instrumentation and early oncology assets.",
+  src:[["Vision Life Sciences power list","https://visionlifesciences.com/insights/ai-drug-discovery-companies"]]},
+ {name:"Generate:Biomedicines",country:"USA",type:"AI-native",stage:"IPO (2026)",ticker:"Public; ticker needs refresh",ipo:"Feb/Mar 2026; IPO at $16, raised about $400M",quote:"Refresh live quote",quoteUrl:"https://www.google.com/search?q=Generate+Biomedicines+stock+price",score:67,valuation:"Newly public; post-IPO price reportedly fell from offer",lane:"Protein design",fund:"~$750M raised; ~$400M IPO",focus:"Generative protein design across ~17 programs; public via 2026 IPO.",
+  pipeline:"GB-0895 (anti-TSLP) — Phase 3 severe asthma, Phase 1b COPD. GB-4362 (MMAE neutralizer, oncology). GB-5267 (MUC16 CAR-T, with Roswell Park).",
+  products:"The Generate Platform — generative model for protein/antibody design.",
+  models:"Generative diffusion models for proteins (Chroma lineage).",
+  rel:"IPO'd Feb 2026 (~$400M). Collaboration with Roswell Park; prior big-pharma deals (Amgen, Novartis).",
+  thesis:"Interesting late-stage biologics exposure; check whether GB-0895 economics and differentiation justify AI-platform premium.",
+  src:[["Generate S-1 (SEC)","https://www.sec.gov/Archives/edgar/data/2100782/000119312526037799/ck0002100782-20260204.htm"]]},
+ {name:"Xaira Therapeutics",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.xaira.com/",score:74,valuation:"Private; launched with more than $1B committed",lane:"Protein design",fund:"Launched 2024 with >$1B",focus:"Protein/molecule design; the largest AI-biotech launch in history — still early on pipeline.",
+  pipeline:"Early-stage; building platform before disclosing clinical candidates.",
+  products:"Platform built on RFdiffusion/RFantibody; X-Cell — a 4.9B-parameter diffusion model predicting cellular response to genetic perturbation (Mar 2026).",
+  models:"RFdiffusion, RFantibody (David Baker lineage); X-Cell diffusion model.",
+  rel:"Backed by ARCH & Foresite with >$1B. Founders/leaders: David Baker (Nobel laureate) and ex-Genentech CSO Marc Tessier-Lavigne.",
+  thesis:"Institutional-quality private target, but entry price may already capitalize the platform before clinical proof.",
+  src:[["C&EN — Xaira","https://cen.acs.org/business/start-ups/Backed-1-billion-Xaira-Therapeutics/102/i13"],["Baker Lab — RFdiffusion","https://www.bakerlab.org/2025/02/28/designing-antibodies-with-rfdiffusion/"]]},
+ {name:"insitro",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.insitro.com/",score:66,valuation:"Private; about $640M raised",lane:"Biology data / phenomics",fund:"~$640M raised",focus:"Machine learning on quantitative biology data for complex diseases.",
+  pipeline:"Focus on metabolic and neurological disorders.",
+  products:"ISM platform integrating cellular assays + single-cell sequencing with ML.",
+  models:"ML models over quantitative-biology datasets.",
+  rel:"Partnered with Eli Lilly and Bristol-Myers Squibb. Founded by Daphne Koller.",
+  thesis:"Strong founder and data strategy; diligence should test whether partnerships convert into durable economics or wholly owned assets.",
+  src:[["IntuitionLabs — AI biologics","https://intuitionlabs.ai/articles/ai-biologics-discovery-pharma-investment-trends"]]},
+ {name:"XtalPi",country:"China",type:"AI + physics",stage:"IPO (HKEX: 2228)",ticker:"HKEX: 2228",ipo:"Jun 13 2024; raised about US$126.7M",quote:"Refresh HK quote",quoteUrl:"https://www.hkex.com.hk/Market-Data/Securities-Prices/Equities/Equities-Quote?sym=2228&sc_lang=en",score:64,valuation:"Public HK-listed AI + robotics platform",lane:"Physics + AI simulation",fund:"~$785M raised",focus:"Quantum-physics simulation + AI + robotics for drug and materials discovery.",
+  pipeline:"Partner-driven: PEP08 (PRMT5 inhibitor, with PharmaEngine); an oral small-molecule GPCR program.",
+  products:"Quantum-physics + AI + robotics platform; XtalGazer CSP for polymorph screening.",
+  models:"Quantum-mechanics calculations coupled with AI; automated robotic labs.",
+  rel:"DoveTree collaboration worth up to ~$6B; partnerships with Pfizer and Lilly. HKEX-listed.",
+  thesis:"Useful China public comp and robotics angle; verify revenue quality because materials and services mix can dilute pure drug-discovery exposure.",
+  src:[["XtalPi–DoveTree","https://en.xtalpi.com/xtalpi-and-dovetree-announce-landmark-6-billion-ai-drug-discovery-collaboration/"]]},
+ {name:"Iambic Therapeutics",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.iambic.ai/",score:72,valuation:"Private; >$100M round in Nov 2025",lane:"Generative chemistry",fund:">$100M round (Nov 2025)",focus:"Generative + physics ML for small molecules; strong translational focus.",
+  pipeline:"IAM1363 — went from program inception to IND in ~2 years (vs ~6-year average). Oncology-focused.",
+  products:"Enchant (multimodal transformer predicting clinical outcomes early); NeuralPLexer (protein–ligand structure prediction).",
+  models:"Enchant, NeuralPLexer.",
+  rel:"Bayer drug-discovery collaboration. Raised >$100M oversubscribed (Nov 2025).",
+  thesis:"Compelling private generative-chemistry candidate; focus diligence on IND speed, translational quality, and Bayer economics.",
+  src:[["Iambic — $100M round","https://www.iambic.ai/post/iambic-raises-over-100-million"]]},
+ {name:"Chai Discovery",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.chaidiscovery.com/",score:69,valuation:"Private; Lilly access deal supports platform value",lane:"Structure foundation models",fund:"Backed incl. Lilly access deal",focus:"Foundation models for biomolecular structure prediction; therapeutics emerging.",
+  pipeline:"Primarily a model/platform company; early therapeutic work.",
+  products:"Chai-1 (multimodal foundation model for proteins, small molecules, DNA, RNA, glycosylation); Chai-2.",
+  models:"Chai-1 / Chai-2 structure-prediction foundation models (Chai-1 open-sourced).",
+  rel:"Eli Lilly partnership (Jan 2026) — mid-eight-figure annual access fee to deploy Chai models.",
+  thesis:"Potentially attractive picks-and-shovels model; underwriting should separate software-like access revenue from drug ownership upside.",
+  src:[["Chai-lab (GitHub)","https://github.com/chaidiscovery/chai-lab"],["Contrary Research","https://research.contrary.com/company/chai-discovery"]]},
+ {name:"Eli Lilly",country:"USA",type:"Big pharma",stage:"Public (NYSE: LLY)",ticker:"NYSE: LLY",ipo:"Public since 1952",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/LLY",score:58,valuation:"Mega-cap pharma; AI exposure is strategic, not pure-play",lane:"Big pharma + compute",fund:"$1B NVIDIA lab commitment",focus:"Most aggressive big-pharma AI adopter: own pipeline + heavy AI infrastructure + deals.",
+  pipeline:"Broad in-house pipeline (metabolic, oncology, immunology) increasingly AI-supported.",
+  products:"LillyPod supercomputer (DGX SuperPOD, 1,016 Blackwell GPUs, Mar 2026); TuneLab AI service.",
+  models:"Deploys partners' models (Isomorphic IsoDDE, Chai-1) on NVIDIA BioNeMo infrastructure.",
+  rel:"$1B NVIDIA co-innovation lab; deals with Isomorphic (>$1.7B), Chai, Insilico (up to $2.75B), insitro.",
+  thesis:"Best strategic-readthrough name, but AI-drug discovery is only one factor inside a much larger GLP-1-driven valuation.",
+  src:[["Lilly–NVIDIA lab","https://investor.lilly.com/news-releases/news-release-details/nvidia-and-lilly-announce-co-innovation-ai-lab-reinvent-drug"]]},
+ {name:"Roche",country:"Switzerland",type:"Big pharma",stage:"Public (SIX/OTC)",ticker:"SIX: ROG / OTC: RHHBY",ipo:"Public legacy pharma",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/RHHBY",score:54,valuation:"Large pharma; AI factory is strategic infrastructure",lane:"Big pharma + compute",fund:"Global pharma major",focus:"Building large-scale AI capacity for diagnostics + therapeutics.",
+  pipeline:"Broad therapeutics + diagnostics pipeline; digital-twin work on GLP-1 metabolic drugs.",
+  products:"NVIDIA-powered AI factory (2,176 GPUs across US & Europe, May 2026); digital twins.",
+  models:"BioNeMo-based models; digital-twin simulations.",
+  rel:"NVIDIA AI-factory partnership (May 2026). Genentech is a Roche subsidiary; prior Recursion collaboration.",
+  thesis:"Important buyer/partner and public comp, less useful as a pure-play investment vehicle.",
+  src:[["Roche–NVIDIA AI factory","https://intuitionlabs.ai/articles/roche-nvidia-ai-factory-glp-1-digital-twins"]]},
+ {name:"Novartis",country:"Switzerland",type:"Big pharma",stage:"Public (NYSE: NVS)",ticker:"NYSE: NVS",ipo:"Public legacy pharma",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/NVS",score:52,valuation:"Large pharma; AI exposure through partnerships",lane:"Big pharma + compute",fund:"Global pharma major",focus:"AI partnerships across discovery & development.",
+  pipeline:"Broad in-house pipeline; AI applied across discovery.",
+  products:"Internal AI tooling plus external model access.",
+  models:"Partner models (incl. Isomorphic).",
+  rel:"Isomorphic partnership (~$1.2B), expanded in 2025.",
+  thesis:"Useful strategic counterparty; not a clean AI-drug discovery equity exposure.",
+  src:[["Vision Life Sciences power list","https://visionlifesciences.com/insights/ai-drug-discovery-companies"]]},
+ {name:"NVIDIA",country:"USA",type:"Infrastructure",stage:"Public (NASDAQ: NVDA)",ticker:"NASDAQ: NVDA",ipo:"Jan 22 1999; IPO price $12 before splits",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/NVDA",score:56,valuation:"Mega-cap AI infrastructure; not drug-specific",lane:"Infrastructure",fund:"Trillion-$ tech co",focus:"Supplies the GPUs + biology AI models the whole field runs on.",
+  pipeline:"N/A — enabling platform, not a drug developer.",
+  products:"BioNeMo platform; DGX SuperPOD / Blackwell GPUs.",
+  models:"BioNeMo model family: protein, RNA structure, molecular synthesis, toxicity prediction (2026 updates).",
+  rel:"Powers Lilly ($1B lab), Roche (AI factory) and many AI-native startups.",
+  thesis:"Infrastructure winner and signal source, but valuation is driven by broad AI demand rather than biotech alone.",
+  src:[["Bio-IT World — NVIDIA","https://www.bio-itworld.com/news/2026/01/12/nvidia-bets-big-on-ai-driven-drug-discovery--physical-ai--and-a--1-billion-eli-lilly-partnership"]]},
+ {name:"Google DeepMind",country:"UK / USA",type:"Infrastructure",stage:"Part of Alphabet",ticker:"NASDAQ: GOOGL / GOOG",ipo:"Alphabet IPO Aug 19 2004",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/GOOGL",score:50,valuation:"Part of Alphabet; AI biology is a small piece",lane:"Structure foundation models",fund:"Alphabet-funded",focus:"Research lab whose protein-structure work underpins the structure-model lane.",
+  pipeline:"N/A — research; commercialized via Isomorphic Labs.",
+  products:"AlphaFold 1/2/3.",
+  models:"AlphaFold 3 — protein/molecule structure & interaction prediction.",
+  rel:"Spun out Isomorphic Labs; part of Alphabet.",
+  thesis:"Critical technology source, but not direct investable AI-drug discovery exposure except through Alphabet.",
+  src:[["Isomorphic — our tech","https://www.isomorphiclabs.com/our-tech"]]}
+];
+
+const companyZh = {
+ "Isomorphic Labs":{country:"英国",type:"AI 原生公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；2026年5月完成 21 亿美元 B 轮融资",lane:"结构基础模型",fund:"2026年5月 21 亿美元 B 轮 + 此前约 6 亿美元",focus:"基于 AlphaFold 衍生模型进行药物设计；主要通过与大型药企合作，而不是完全自建管线。",
+  pipeline:"肿瘤和免疫学项目。首批 AI 设计药物预计在 2026 年底前进入临床试验；目前尚无人体验证。",
+  products:"IsoDDE（Isomorphic Drug Design Engine）；共同开发 AlphaFold 3。",
+  models:"AlphaFold 3（与 DeepMind）+ IsoDDE；在最难的蛋白-配体基准上达到 50%，高于 AlphaFold 3 的 23%。",
+  rel:"从 Google DeepMind 分拆，同属 Alphabet。合作包括 Eli Lilly（超过 17 亿美元）和 Novartis（约 12 亿美元）。21 亿美元 B 轮由 Thrive Capital 领投。",
+  thesis:"平台质量和战略验证很强，但除 Alphabet 间接敞口外暂无直接公开投资入口，也尚无人体验效数据。"},
+ "Recursion":{country:"美国",type:"AI 原生公司",stage:"已上市（NASDAQ: RXRX）",ipo:"2021年4月20日；IPO 发行价 18 美元",quote:"刷新实时股价",valuation:"上市纯 AI 药物发现标的；市值和现金 runway 需刷新",lane:"生物数据 / 表型组学",fund:"上市公司；已吸收 Exscientia 资本",focus:"表型组学：大规模自动化细胞图像实验；已与 Exscientia 合并。",
+  pipeline:"REC-4881（MEK1/2，家族性腺瘤性息肉病）已有 II 期疗效信号，正与 FDA 讨论注册路径，预计 2026 下半年更新。REC-1245（RBM39 降解剂，实体瘤/淋巴瘤）早期数据显示耐受性良好。REC-617（CDK7 抑制剂）预计 2027 上半年披露安全性/PK 数据。公司已停止 4 个项目，聚焦肿瘤和罕见病。",
+  products:"Recursion OS：闭环 AI + 湿实验平台。",
+  models:"Recursion OS AI 模型；AI 驱动的精准分子设计平台。",
+  rel:"与 Exscientia 合并/吸收；历史合作伙伴包括 Roche/Genentech 和 Bayer。",
+  thesis:"最清晰的上市 AI 药物发现纯标的之一，但估值更依赖临床读数，而不仅是平台规模。"},
+ "Insilico Medicine":{country:"香港 / 中国",type:"AI 原生公司",stage:"已上市（HKEX: 3696）",ipo:"2025年12月底上市；融资约 2.93 亿美元",quote:"刷新港股报价",valuation:"港交所上市 AI 药物研发公司",lane:"生成式化学",fund:"IPO 约 2.93 亿美元 + 私募超过 5 亿美元（合计约 8 亿美元）",focus:"端到端生成式平台，产品化程度高，并拥有自有临床管线。",
+  pipeline:"Rentosertib（ISM001-055）是用于特发性肺纤维化的 TNIK 抑制剂，2026年7月7日启动 III 期。它是首个“靶点和分子均由 AI 生成”的药物；IIa 期积极结果已于 2025年6月发表于 Nature Medicine。",
+  products:"Pharma.AI 套件：PandaOmics / Biology42（靶点发现）、Chemistry42（生成式化学）、inClinico（试验预测）。",
+  models:"生成式化学 Chemistry42 + AI 生物学引擎 PandaOmics。",
+  rel:"与 Eli Lilly 的交易最高 27.5 亿美元，授予候选药物全球权益。2025年12月在港交所上市。",
+  thesis:"临床阶段最成熟的 AI 原生故事；尽调重点应放在 III 期设计、中国/美国监管路径，以及 Lilly 交易后保留的经济权益。"},
+ "Eikon Therapeutics":{country:"美国",type:"AI 原生公司",stage:"已 IPO（2026年2月）",ticker:"上市公司；ticker 需刷新",ipo:"2026年2月；发行价 18 美元，融资约 3.81 亿美元",quote:"刷新实时股价",valuation:"新上市公司；报道显示 IPO 后早期交易偏弱",lane:"生物数据 / 表型组学",fund:"2026年2月 IPO 约 3.81 亿美元",focus:"超分辨率单分子成像 + AI，用于观察活细胞内蛋白运动。",
+  pipeline:"以肿瘤为主的管线，来自活细胞成像发现的靶点。",
+  products:"单分子成像平台（工业规模显微成像）。",
+  models:"蛋白动态成像 + 机器学习分析。",
+  rel:"由前 Merck 研发负责人 Roger Perlmutter 领导；2026年2月与 Generate 同期 IPO。",
+  thesis:"团队和平台质量高，但 PE 承销需要看到科研工具和早期肿瘤资产之外的产品市场验证。"},
+ "Generate:Biomedicines":{country:"美国",type:"AI 原生公司",stage:"已 IPO（2026）",ticker:"上市公司；ticker 需刷新",ipo:"2026年2/3月；发行价 16 美元，融资约 4 亿美元",quote:"刷新实时股价",valuation:"新上市公司；报道显示 IPO 后价格低于发行价",lane:"蛋白设计",fund:"已融资约 7.5 亿美元；IPO 约 4 亿美元",focus:"生成式蛋白设计，约 17 个项目；2026 年通过 IPO 成为上市公司。",
+  pipeline:"GB-0895（抗 TSLP）用于重症哮喘 III 期、COPD Ib 期。GB-4362（MMAE 中和剂，肿瘤）。GB-5267（MUC16 CAR-T，与 Roswell Park 合作）。",
+  products:"Generate Platform：用于蛋白/抗体设计的生成式模型平台。",
+  models:"蛋白生成扩散模型（Chroma 谱系）。",
+  rel:"2026年2月 IPO（约 4 亿美元）。与 Roswell Park 合作；此前有 Amgen、Novartis 等大型药企交易。",
+  thesis:"具有后期生物药敞口；需核查 GB-0895 的经济权益和差异化是否足以支撑 AI 平台溢价。"},
+ "Xaira Therapeutics":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；成立时承诺资金超过 10 亿美元",lane:"蛋白设计",fund:"2024 年成立时融资超过 10 亿美元",focus:"蛋白/分子设计；AI 生物科技史上最大规模初创之一，但管线仍处早期。",
+  pipeline:"早期阶段；在披露临床候选药物前主要建设平台。",
+  products:"基于 RFdiffusion/RFantibody 的平台；X-Cell 是 2026年3月发布的 49 亿参数扩散模型，用于预测细胞对基因扰动的反应。",
+  models:"RFdiffusion、RFantibody（David Baker 谱系）；X-Cell 扩散模型。",
+  rel:"由 ARCH 和 Foresite 等支持，融资超过 10 亿美元。创始/领导团队包括 Nobel 奖得主 David Baker 和前 Genentech CSO Marc Tessier-Lavigne。",
+  thesis:"机构级私有标的，但进入价格可能已经提前反映平台价值，而临床验证仍不足。"},
+ "insitro":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；累计融资约 6.4 亿美元",lane:"生物数据 / 表型组学",fund:"累计融资约 6.4 亿美元",focus:"将机器学习用于复杂疾病的定量生物数据。",
+  pipeline:"聚焦代谢和神经系统疾病。",
+  products:"ISM 平台：整合细胞实验、单细胞测序和机器学习。",
+  models:"基于定量生物学数据集的机器学习模型。",
+  rel:"与 Eli Lilly 和 Bristol-Myers Squibb 合作；由 Daphne Koller 创立。",
+  thesis:"创始人和数据策略强；尽调应验证合作能否转化为可持续经济收益或自有资产。"},
+ "XtalPi":{country:"中国",type:"AI + 物理",stage:"已上市（HKEX: 2228）",ipo:"2024年6月13日；融资约 1.267 亿美元",quote:"刷新港股报价",valuation:"港交所上市 AI + 机器人平台",lane:"物理 + AI 模拟",fund:"累计融资约 7.85 亿美元",focus:"量子物理模拟 + AI + 机器人，用于药物和材料发现。",
+  pipeline:"合作驱动：PEP08（PRMT5 抑制剂，与 PharmaEngine 合作）；另有口服小分子 GPCR 项目。",
+  products:"量子物理 + AI + 机器人平台；XtalGazer CSP 用于晶型筛选。",
+  models:"量子力学计算结合 AI；自动化机器人实验室。",
+  rel:"与 DoveTree 合作最高约 60 亿美元；与 Pfizer 和 Lilly 有合作；已在港交所上市。",
+  thesis:"有用的中国上市可比公司和机器人平台角度；需验证收入质量，因为材料和服务收入可能稀释纯药物发现敞口。"},
+ "Iambic Therapeutics":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；2025年11月完成超过 1 亿美元融资",lane:"生成式化学",fund:"2025年11月超过 1 亿美元融资",focus:"生成式 + 物理机器学习用于小分子，转化落地导向较强。",
+  pipeline:"IAM1363 从项目启动到 IND 约 2 年（行业平均约 6 年）；聚焦肿瘤。",
+  products:"Enchant（多模态 transformer，用于早期预测临床结果）；NeuralPLexer（蛋白-配体结构预测）。",
+  models:"Enchant、NeuralPLexer。",
+  rel:"与 Bayer 合作进行药物发现。2025年11月完成超过 1 亿美元超额认购融资。",
+  thesis:"有吸引力的私有生成式化学标的；重点尽调 IND 速度、转化质量和 Bayer 合作经济权益。"},
+ "Chai Discovery":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；Lilly 访问协议支持平台价值",lane:"结构基础模型",fund:"有 Lilly 访问协议等背书",focus:"生物分子结构预测基础模型；治疗业务正在形成。",
+  pipeline:"主要是模型/平台公司；治疗项目仍在早期。",
+  products:"Chai-1（面向蛋白、小分子、DNA、RNA、糖基化的多模态基础模型）；Chai-2。",
+  models:"Chai-1 / Chai-2 结构预测基础模型（Chai-1 已开源）。",
+  rel:"Eli Lilly 合作（2026年1月），以每年中八位数美元访问费部署 Chai 模型。",
+  thesis:"可能具备“卖铲子”软件收入属性；承销需区分软件访问收入和药物所有权上行。"},
+ "Eli Lilly":{country:"美国",type:"大型药企",stage:"上市（NYSE: LLY）",ipo:"1952 年上市",quote:"刷新实时股价",valuation:"超大市值药企；AI 是战略敞口而非纯标的",lane:"大药企 + 算力",fund:"10 亿美元 NVIDIA 实验室承诺",focus:"最积极采用 AI 的大型药企之一：自有管线 + 重 AI 基础设施 + 多项合作。",
+  pipeline:"广泛内部管线（代谢、肿瘤、免疫）越来越多地由 AI 支持。",
+  products:"LillyPod 超级计算机（DGX SuperPOD，1,016 块 Blackwell GPU，2026年3月）；TuneLab AI 服务。",
+  models:"在 NVIDIA BioNeMo 基础设施上部署合作伙伴模型（Isomorphic IsoDDE、Chai-1）。",
+  rel:"10 亿美元 NVIDIA 共创实验室；与 Isomorphic（超过 17 亿美元）、Chai、Insilico（最高 27.5 亿美元）、insitro 合作。",
+  thesis:"最重要的战略读数公司，但 AI 药物发现只是其更大 GLP-1 驱动估值中的一部分。"},
+ "Roche":{country:"瑞士",type:"大型药企",stage:"上市（SIX/OTC）",ipo:"传统上市药企",quote:"刷新实时股价",valuation:"大型药企；AI factory 属战略基础设施",lane:"大药企 + 算力",fund:"全球大型药企",focus:"为诊断和治疗业务建设大规模 AI 能力。",
+  pipeline:"广泛治疗和诊断管线；在 GLP-1 代谢药物上开展数字孪生工作。",
+  products:"NVIDIA 驱动的 AI factory（2026年5月，美国和欧洲共 2,176 块 GPU）；数字孪生。",
+  models:"BioNeMo 模型；数字孪生模拟。",
+  rel:"2026年5月与 NVIDIA 的 AI factory 合作。Genentech 是 Roche 子公司；曾与 Recursion 合作。",
+  thesis:"重要买方/合作方和上市可比，但不是纯 AI 药物发现投资工具。"},
+ "Novartis":{country:"瑞士",type:"大型药企",stage:"上市（NYSE: NVS）",ipo:"传统上市药企",quote:"刷新实时股价",valuation:"大型药企；AI 敞口主要来自合作",lane:"大药企 + 算力",fund:"全球大型药企",focus:"在药物发现和开发中布局 AI 合作。",
+  pipeline:"广泛内部管线；AI 应用于发现流程。",
+  products:"内部 AI 工具 + 外部模型访问。",
+  models:"合作伙伴模型（包括 Isomorphic）。",
+  rel:"与 Isomorphic 合作约 12 亿美元，并于 2025 年扩大合作。",
+  thesis:"有用的战略交易对手，但不是清晰的 AI 药物发现股权敞口。"},
+ "NVIDIA":{country:"美国",type:"基础设施",stage:"上市（NASDAQ: NVDA）",ipo:"1999年1月22日；拆股前 IPO 价 12 美元",quote:"刷新实时股价",valuation:"超大市值 AI 基础设施公司；非药物专属",lane:"基础设施",fund:"万亿美元级科技公司",focus:"提供该领域运行所需的 GPU 和生物 AI 模型。",
+  pipeline:"不适用：赋能平台，不是药物开发商。",
+  products:"BioNeMo 平台；DGX SuperPOD / Blackwell GPU。",
+  models:"BioNeMo 模型族：蛋白、RNA 结构、分子合成、毒性预测（2026 更新）。",
+  rel:"支持 Lilly（10 亿美元实验室）、Roche（AI factory）和许多 AI 原生初创公司。",
+  thesis:"基础设施赢家和行业信号源，但估值由广义 AI 需求驱动，而非生物科技单一因素。"},
+ "Google DeepMind":{country:"英国 / 美国",type:"基础设施",stage:"Alphabet 旗下",ipo:"Alphabet 于 2004年8月19日 IPO",quote:"刷新实时股价",valuation:"Alphabet 旗下；AI 生物只是其中一小部分",lane:"结构基础模型",fund:"Alphabet 支持",focus:"研究实验室，其蛋白结构工作支撑结构模型赛道。",
+  pipeline:"不适用：研究业务；通过 Isomorphic Labs 商业化。",
+  products:"AlphaFold 1/2/3。",
+  models:"AlphaFold 3：蛋白/分子结构与相互作用预测。",
+  rel:"分拆出 Isomorphic Labs；同属 Alphabet。",
+  thesis:"关键技术来源，但除 Alphabet 外并非直接 AI 药物发现投资敞口。"}
+};
+
+const news = [
+ ["Jul 7 2026","<b>Insilico Medicine</b> initiated a Phase III trial of Rentosertib (ISM001-055), its AI-designed TNIK inhibitor for idiopathic pulmonary fibrosis — a milestone for AI-discovered drugs.",[["PRNewswire","https://www.prnewswire.com/news-releases/insilico-initiates-phase-iii-clinical-trial-for-rentosertib-its-ai-empowered-tnik-inhibitor-for-idiopathic-pulmonary-fibrosis-302819553.html"]]],
+ ["Jun 30 2026","<b>Anthropic</b> announced it will begin developing drugs of its own — an AI company entering therapeutics directly.",[["STAT News","https://www.statnews.com/2026/06/30/anthropic-ai-drug-development/"]]],
+ ["Jun 2026","At <b>BIO 2026</b>, AI drug discovery reached clinical proof-of-concept milestones, with Chinese AI-native players prominent.",[["TechTimes","https://www.techtimes.com/articles/319136/20260626/ai-drug-discovery-reaches-clinical-proof-bio-2026-china-beat-biosecure-act-science.htm"]]],
+ ["May 2026","<b>Isomorphic Labs</b> closed a $2.1B Series B (Thrive-led). <b>Roche</b> launched an NVIDIA-powered AI factory (2,176 GPUs across US & Europe).",[["Roche–NVIDIA","https://intuitionlabs.ai/articles/roche-nvidia-ai-factory-glp-1-digital-twins"]]],
+ ["2026","<b>Eli Lilly–Insilico</b> deal worth up to $2.75B for worldwide rights to Pharma.AI-discovered candidates. <b>Sanofi–Owkin</b> partnered on agentic AI for R&D. <b>XtalPi–DoveTree</b> signed a collaboration worth up to ~$6B.",[["Endpoints AI hub","https://endpoints.news/topic-hub/ai-drug-discovery-news-analysis-and-interviews/"]]],
+ ["Feb 2026","<b>Eikon Therapeutics</b> (~$381M) and <b>Generate:Biomedicines</b> (~$400M) both IPO'd. <b>Isomorphic</b> unveiled IsoDDE (50% vs 23% for AlphaFold 3 on the hardest binding benchmark).",[["BioPharmaTrend","https://www.biopharmatrend.com/news/isomorphic-labs-presents-an-ai-drug-design-engine-that-goes-beyond-alphafold-3-1493/"]]],
+ ["Ongoing","<b>FDA</b> accepted a letter of intent to evaluate an AI tool predicting drug-induced liver injury (DILI); AI drug-development guidance expected to finalize in 2026. Market ~$2.6B with 173+ programs in the clinic.",[["FDA — AI for drug development","https://www.fda.gov/about-fda/center-drug-evaluation-and-research-cder/artificial-intelligence-drug-development"]]]
+];
+
+const newsZh = [
+ ["2026年7月7日","<b>Insilico Medicine</b> 启动 Rentosertib（ISM001-055）III 期临床试验。该药是用于特发性肺纤维化的 AI 设计 TNIK 抑制剂，也是 AI 发现药物的重要里程碑。",[["PRNewswire","https://www.prnewswire.com/news-releases/insilico-initiates-phase-iii-clinical-trial-for-rentosertib-its-ai-empowered-tnik-inhibitor-for-idiopathic-pulmonary-fibrosis-302819553.html"]]],
+ ["2026年6月30日","<b>Anthropic</b> 宣布将开始自主开发药物，意味着一家 AI 公司直接进入治疗药物研发。",[["STAT News","https://www.statnews.com/2026/06/30/anthropic-ai-drug-development/"]]],
+ ["2026年6月","在 <b>BIO 2026</b> 上，AI 药物发现进入临床概念验证阶段，中国 AI 原生公司表现突出。",[["TechTimes","https://www.techtimes.com/articles/319136/20260626/ai-drug-discovery-reaches-clinical-proof-bio-2026-china-beat-biosecure-act-science.htm"]]],
+ ["2026年5月","<b>Isomorphic Labs</b> 完成 21 亿美元 B 轮融资（Thrive 领投）。<b>Roche</b> 启动由 NVIDIA 支持的 AI factory，在美国和欧洲部署 2,176 块 GPU。",[["Roche–NVIDIA","https://intuitionlabs.ai/articles/roche-nvidia-ai-factory-glp-1-digital-twins"]]],
+ ["2026年","<b>Eli Lilly–Insilico</b> 达成最高 27.5 亿美元交易，获得 Pharma.AI 发现候选药物的全球权益。<b>Sanofi–Owkin</b> 在 agentic AI 研发上合作。<b>XtalPi–DoveTree</b> 签署最高约 60 亿美元合作。",[["Endpoints AI hub","https://endpoints.news/topic-hub/ai-drug-discovery-news-analysis-and-interviews/"]]],
+ ["2026年2月","<b>Eikon Therapeutics</b>（约 3.81 亿美元）和 <b>Generate:Biomedicines</b>（约 4 亿美元）均完成 IPO。<b>Isomorphic</b> 发布 IsoDDE，在最难结合基准上达到 50%，高于 AlphaFold 3 的 23%。",[["BioPharmaTrend","https://www.biopharmatrend.com/news/isomorphic-labs-presents-an-ai-drug-design-engine-that-goes-beyond-alphafold-3-1493/"]]],
+ ["持续跟踪","<b>FDA</b> 已接受意向书，将评估预测药物性肝损伤（DILI）的 AI 工具；AI 药物开发指南预计于 2026 年定稿。市场规模约 26 亿美元，已有 173+ 项目进入临床。",[["FDA — AI for drug development","https://www.fda.gov/about-fda/center-drug-evaluation-and-research-cder/artificial-intelligence-drug-development"]]]
+];
+
+const relationships = [
+ ["Google DeepMind → Isomorphic Labs","Isomorphic was spun out of DeepMind; both are under Alphabet. AlphaFold 3 was co-developed, and Isomorphic's IsoDDE builds directly on it. Cross-check: this is why Isomorphic leads the structure lane despite having no drug in humans yet."],
+ ["Recursion + Exscientia","The two AI-drug pioneers merged (trans-Atlantic combination); Recursion absorbed Exscientia's capital and programs. Cross-check: 'Recursion' figures post-2025 include the combined entity."],
+ ["Eli Lilly — the hub of deals","Lilly connects to the most players: Isomorphic (>$1.7B), Chai (model access), Insilico (up to $2.75B), insitro, and NVIDIA ($1B lab). Cross-check: when a startup cites a 'big pharma deal,' it is often Lilly."],
+ ["NVIDIA — the compute backbone","Powers Lilly's LillyPod, Roche's AI factory, and many startups via BioNeMo. Cross-check: 'GPU/supercomputer' announcements in this space almost always trace back to NVIDIA."],
+ ["David Baker lineage (RFdiffusion)","Baker's Institute for Protein Design created RFdiffusion/RFantibody; Xaira is built on this lineage. Cross-check: 'de novo protein design' claims usually connect back to Baker-lab models."],
+ ["Isomorphic ↔ Novartis","Novartis is Isomorphic's other flagship pharma partner (~$1.2B), alongside Lilly — a way to validate Isomorphic's commercial traction independent of Alphabet."],
+ ["Chai & Boltz — open vs closed structure models","Chai-1 (open-sourced) and Boltz (open) compete with Isomorphic's closed IsoDDE. Cross-check: open benchmarks let you sanity-check vendor accuracy claims."]
+];
+
+const relationshipsZh = [
+ ["Google DeepMind → Isomorphic Labs","Isomorphic 从 DeepMind 分拆出来，两者同属 Alphabet。AlphaFold 3 由双方共同开发，Isomorphic 的 IsoDDE 直接建立在这一技术基础上。交叉验证：这解释了为什么 Isomorphic 在结构模型赛道领先，即使目前还没有人体临床用药。"],
+ ["Recursion + Exscientia","两家 AI 药物发现先行者合并；Recursion 吸收了 Exscientia 的资金和项目。交叉验证：2025 年后的 Recursion 数据需要按合并后实体理解。"],
+ ["Eli Lilly — 交易中心","Lilly 连接了最多玩家：Isomorphic（超过 17 亿美元）、Chai（模型访问）、Insilico（最高 27.5 亿美元）、insitro，以及 NVIDIA（10 亿美元实验室）。交叉验证：当初创公司提到大型药企合作时，经常可以追溯到 Lilly。"],
+ ["NVIDIA — 算力底座","NVIDIA 支撑 Lilly 的 LillyPod、Roche 的 AI factory，以及许多通过 BioNeMo 运行的初创公司。交叉验证：该领域的 GPU/超级计算机公告几乎总能追溯到 NVIDIA。"],
+ ["David Baker 谱系（RFdiffusion）","Baker 的 Institute for Protein Design 创建了 RFdiffusion/RFantibody；Xaira 建立在这一技术谱系上。交叉验证：从头蛋白设计相关声明通常会连接回 Baker 实验室模型。"],
+ ["Isomorphic ↔ Novartis","Novartis 是 Isomorphic 的另一个旗舰药企合作方（约 12 亿美元），与 Lilly 并列。这有助于验证 Isomorphic 的商业吸引力并非只依赖 Alphabet 背书。"],
+ ["Chai & Boltz — 开源与闭源结构模型","Chai-1（已开源）和 Boltz（开源）与 Isomorphic 的闭源 IsoDDE 竞争。交叉验证：开源基准可以帮助核查供应商准确率声明。"]
+];
+
+const glossary = [
+ ["Target","The biological molecule (usually a protein) a drug acts on to treat disease."],
+ ["Hit / Lead","A hit shows initial activity against a target; a lead is a refined, stronger candidate."],
+ ["Virtual screening","Using computers to test huge compound libraries against a target instead of physical lab tests."],
+ ["Generative chemistry","AI that designs brand-new molecules with desired properties (e.g., Insilico's Chemistry42)."],
+ ["Protein design / de novo","Building entirely new proteins from scratch (e.g., RFdiffusion)."],
+ ["Phenomics","Studying cell traits (often via microscope images) at massive scale to learn biology (e.g., Recursion)."],
+ ["Foundation model","A large AI model trained on broad data (e.g., protein structures) reusable across many tasks."],
+ ["AlphaFold 3","DeepMind/Isomorphic model predicting protein & molecular-complex structure — the field's cornerstone."],
+ ["RFdiffusion","David Baker's diffusion model for de novo protein/antibody design; RFdiffusion3 (2025) added atom-level, all-biomolecule design."],
+ ["ADMET / DILI","Absorption, Distribution, Metabolism, Excretion, Toxicity. DILI = drug-induced liver injury, a top failure cause."],
+ ["TNIK inhibitor","The mechanism of Insilico's Rentosertib — blocks the TNIK protein implicated in fibrosis."],
+ ["Degrader","A drug that destroys a target protein rather than just blocking it (e.g., Recursion's REC-1245 RBM39 degrader)."],
+ ["Phase I / II / III","Human-trial stages: safety → efficacy in a small group → large confirmation."],
+ ["IND","Investigational New Drug application — regulatory clearance to start human trials."],
+ ["Digital twin","A virtual simulation of a biological/manufacturing system used to test scenarios."],
+ ["BioNeMo","NVIDIA's platform of AI models for biology (proteins, RNA, molecules)."],
+ ["IPO / HKEX / NASDAQ / NYSE","IPO = first public share sale; the rest are stock exchanges (Hong Kong; two US)."]
+];
+
+const glossaryZh = [
+ ["靶点","药物作用的生物分子，通常是蛋白或基因，用来影响疾病过程。"],
+ ["Hit / Lead","Hit 是初步显示活性的候选物；Lead 是经过优化、更有开发潜力的候选物。"],
+ ["虚拟筛选","用计算机筛选大量化合物库，而不是全部做实体实验。"],
+ ["生成式化学","AI 根据目标性质设计全新的分子，例如 Insilico 的 Chemistry42。"],
+ ["蛋白设计 / 从头设计","从零设计新的蛋白或结合体，例如 RFdiffusion。"],
+ ["表型组学","大规模研究细胞表现，常通过显微图像学习生物规律，例如 Recursion。"],
+ ["基础模型","在广泛数据上训练的大模型，可复用于很多任务，例如蛋白结构预测。"],
+ ["AlphaFold 3","DeepMind / Isomorphic 的模型，用于预测蛋白和分子复合物结构，是该领域关键基础。"],
+ ["RFdiffusion","David Baker 团队的从头蛋白/抗体设计扩散模型；RFdiffusion3 在 2025 年扩展到原子级多生物分子设计。"],
+ ["ADMET / DILI","ADMET 指吸收、分布、代谢、排泄、毒性。DILI 是药物性肝损伤，是药物失败的重要原因。"],
+ ["TNIK 抑制剂","Insilico 的 Rentosertib 机制，阻断与纤维化相关的 TNIK 蛋白。"],
+ ["降解剂","不是简单阻断靶点，而是让目标蛋白被降解，例如 Recursion 的 REC-1245 RBM39 degrader。"],
+ ["I / II / III 期","人体临床试验阶段：安全性、小规模有效性、大规模确证。"],
+ ["IND","Investigational New Drug，新药临床试验申请，获批后可进入人体试验。"],
+ ["数字孪生","对生物或制造系统做虚拟模拟，用来测试不同场景。"],
+ ["BioNeMo","NVIDIA 的生物 AI 模型平台，覆盖蛋白、RNA、分子等。"],
+ ["IPO / HKEX / NASDAQ / NYSE","IPO 是首次公开发行；HKEX、NASDAQ、NYSE 分别是香港和美国主要交易所。"]
+];
+
+const I18N = {
+  en: {
+    ownerStatus:"Owner controls · local HTML · data snapshot Jul 10 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
+    updated:"Work Station · updated Jul 10 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
+    sideFoot:"Snapshot — figures move fast. Ask Codex/AI to refresh public data before investment decisions.",
+    dashTitle:"PE investor dashboard", dashSub:"Public comps, IPO status, platform/product depth, and diligence notes in one view.", dashNote:"Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.",
+    dashMetric1:"Public / IPO-traded comps tracked", dashMetric2:"Private AI-native targets", dashMetric3:"Most advanced AI-originated drug stage", dashMetric4:"Most active strategic buyer/partner",
+    investScreen:"Investability screen", diligenceLens:"PE diligence lens", watch1Title:"Best near-term public comp", watch1Body:"Recursion: liquid pure-play, but clinical execution and cash burn matter more than platform narrative.", watch2Title:"Best late-stage AI-originated asset", watch2Body:"Insilico: Rentosertib in Phase III for IPF; check trial geography, endpoints, and partner economics.", watch3Title:"Strategic acquirer signal", watch3Body:"Lilly, Roche, Novartis and Bayer deals validate platforms, but milestone-heavy deal values can overstate near-term economics.", watch4Title:"Exit timing", watch4Body:"Private names need clear clinical proof or platform revenue. IPO windows are open but selective for biotech.", watchlistPriorities:"Watchlist priorities",
+    newsTitle:"AI drug & healthcare — news feed", newsSub:"Most recent first. Refreshed by the daily update task.", newsMetric1:"AI drug-discovery market (2026)", newsMetric2:"AI-originated programs in clinic", newsMetric3:"AI molecule Phase I success (vs ~52% historical)", newsMetric4:"Full FDA approvals yet (first expected 2026–27)",
+    overviewTitle:"What is AI drug discovery?", overviewSub:"The concept, the problem, and why it's happening now.", overviewOneTitle:"In one line", overviewOneBody:"Using machine learning and generative AI to find, design, and test new medicines faster and cheaper than traditional trial-and-error lab work.", overviewConceptTitle:"The concept", overviewProblem:"The problem", overviewProblemBody:"A traditional drug takes ~10–15 years and often over $1–2 billion, and ~90% of candidates fail in clinical trials.", overviewIdea:"The core idea", overviewIdeaBody:"Biology produces huge datasets (genomes, proteins, cell images, chemical libraries). AI learns the patterns to predict which molecules will work — replacing much slow physical screening with computation.", overviewPayoff:"The payoff", overviewPayoffBody:"Higher hit rates and compressed timelines — early data shows 80–90% Phase I success vs the ~52% historical average.", overviewWhyNow:"Why now (2024–26)", overviewWhyNowBody:"Three things converged: protein-structure prediction (AlphaFold 3), generative molecule/protein models (RFdiffusion, Chemistry42), and cheap GPU compute at scale (NVIDIA + Lilly, Roche…).",
+    pipelineTitle:"What it includes — the pipeline", pipelineSub:"Where AI plugs into the six stages of making a drug.", stage1:"STAGE 1", stage1Title:"Target identification", stage1Body:"Find the biological \"lever\" of a disease (usually a protein/gene). AI mines genomic & disease data. e.g. Insilico's PandaOmics.", stage2:"STAGE 2", stage2Title:"Hit discovery", stage2Body:"Virtual screening scans huge compound libraries computationally instead of testing millions physically.", stage3:"STAGE 3", stage3Title:"Lead optimization", stage3Body:"Refine candidates for potency, safety & drug-like properties. Generative AI designs new molecules. e.g. Chemistry42, RFdiffusion.", stage4:"STAGE 4", stage4Title:"Preclinical (ADMET)", stage4Body:"Predict absorption, metabolism & toxicity to kill bad candidates early. FDA now piloting an AI liver-injury (DILI) predictor.", stage5:"STAGE 5", stage5Title:"Clinical trials", stage5Body:"AI helps design trials, recruit patients, pick biomarkers & predict outcomes — the 2026 proving ground.", stage6:"STAGE 6", stage6Title:"Manufacturing", stage6Body:"Digital twins & AI optimize production and formulation (e.g., Roche/NVIDIA AI factory).",
+    lanesTitle:"The main technical lanes", lanesSub:"Different bets on how AI best finds drugs — and who leads each.", lane1Title:"Structure foundation models", lane1Body:"Predict 3D protein/molecule structures & how they bind (AlphaFold-style). <b>Leaders:</b> Isomorphic Labs (IsoDDE), Chai (Chai-1), Boltz (open-source).", lane2Title:"Biology data / phenomics", lane2Body:"Run massive automated cell/lab experiments and learn from the images & readouts. <b>Leaders:</b> Recursion, insitro, Eikon.", lane3Title:"Generative chemistry", lane3Body:"Design new molecules from scratch to hit a target. <b>Leaders:</b> Insilico Medicine (Chemistry42), Iambic (NeuralPLexer).", lane4Title:"Protein design", lane4Body:"Build entirely new proteins/binders. <b>Leaders:</b> Xaira (RFdiffusion), Generate:Biomedicines.", lane5Title:"Physics + AI simulation", lane5Body:"Combine quantum/physics simulation with ML for accuracy. <b>Leader:</b> XtalPi.", lane6Title:"Big pharma + compute", lane6Body:"Giants buying GPU capacity & partnering with AI-natives. <b>Leaders:</b> Eli Lilly (+NVIDIA), Roche (+NVIDIA), Novartis (+Isomorphic).",
+    companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 10, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.",
+    allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
+    relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
+    chatTitle:"AI chat / owner edit bar", chatSub:"Use this page as the website's command center: ask for updates, draft new company entries, and save local notes.", chatWelcome:"I am a local demo assistant inside this HTML. To avoid using the site owner's tokens, each viewer can connect their own AI endpoint or embed another chatbot from the panel on the right.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use a server endpoint or external chatbot link. Do not paste private API keys into a public HTML page.", aiModeLabel:"Chat mode", aiModeDemo:"Local demo replies", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Notes autosave to localStorage. Static websites cannot truly self-update unless connected to a backend, CMS, GitHub workflow, or hosted database.",
+    glossaryTitle:"Glossary", glossarySub:"Plain-language definitions of the key terms.",
+    of:"of", companies:"companies", noMatches:"No matches.", sources:"Sources", pipeline:"Pipeline", products:"Products", ticker:"Ticker", ipo:"IPO / listing", valuation:"Valuation view", models:"Models used", funding:"Funding", relationships:"Relationships", thesis:"PE thesis", product:"Product",
+    thCompany:"Company", thStock:"Stock / quote", thIpo:"IPO status", thProduct:"Product / platform", thScore:"Score", thThesis:"PE thesis",
+    settingsSaved:"AI settings saved in this browser only.", settingsCleared:"AI settings cleared.", invalidUrl:"Please enter a valid http(s) URL. For local testing, http://localhost is OK.", apiMissing:"Choose API mode and paste your API endpoint URL first.", embedMissing:"Choose embed mode and paste a chatbot URL first.", apiThinking:"Sending to your AI endpoint...", apiError:"The endpoint could not be reached. Check CORS, URL, and that it accepts POST JSON.", embedReady:"External chatbot loaded below. Use that chat window directly.", embedModeReply:"Embed mode is active. Please use the external chatbot window on the right.",
+    chatDefault:"Demo mode is active. To use a real model without using the site owner's tokens, choose API endpoint mode or embed mode in AI access.",
+    chatRecursion:"Recursion is the cleanest liquid pure-play comp here: NASDAQ-listed since Apr 20 2021, strongest biology-data platform exposure, but the key diligence question is whether clinical readouts and cash runway justify the platform valuation.",
+    chatInsilico:"Insilico has the most advanced AI-originated clinical story in this tracker: HKEX-listed in late 2025, Rentosertib in Phase III, and a large Lilly partnership. Refresh HKEX price and trial details before making an investment memo.",
+    chatAdd:"To add a company, copy one company object in the script, then fill name, country, type, stage, ticker, ipo, quoteUrl, score, products, pipeline, rel, thesis, and sources. Ask Codex to do it and paste the target company name.",
+    chatDomain:"A domain cannot be guaranteed forever automatically. The practical setup is a 10-year registration with auto-renew, registrar lock, a backup payment method, and hosting tied to GitHub/Sites/Netlify/Vercel with scheduled data refresh."
+  },
+  zh: {
+    ownerStatus:"站点管理 · 本地 HTML · 数据快照 2026年7月10日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
+    updated:"工作站 · 2026年7月10日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
+    sideFoot:"数据变化很快。投资决策前请让 Codex/AI 刷新公开数据。",
+    dashTitle:"PE 投资人仪表盘", dashSub:"把公开可比公司、IPO 状态、产品/平台深度和尽调备注放在同一页面。", dashNote:"静态 HTML 不能自动保持实时股价。表格保存的是日期快照和报价链接；用于投委会材料或条款清单前请刷新价格。",
+    dashMetric1:"已追踪公开 / IPO 可比公司", dashMetric2:"私有 AI 原生标的", dashMetric3:"AI 原生药物最高临床阶段", dashMetric4:"最活跃战略买方 / 合作方",
+    investScreen:"可投资性筛选", diligenceLens:"PE 尽调视角", watch1Title:"近期最佳公开可比", watch1Body:"Recursion：流动性较好的纯 AI 药物发现标的，但临床执行和现金消耗比平台叙事更重要。", watch2Title:"最成熟 AI 原生临床资产", watch2Body:"Insilico：Rentosertib 已进入 IPF 三期；需核查试验地区、终点设计和合作方经济权益。", watch3Title:"战略收购/合作信号", watch3Body:"Lilly、Roche、Novartis 和 Bayer 的交易验证了平台价值，但里程碑总额可能高估近期现金价值。", watch4Title:"退出节奏", watch4Body:"私有公司需要明确临床验证或平台收入。IPO 窗口已打开，但生物科技市场仍然很挑剔。", watchlistPriorities:"重点观察名单",
+    newsTitle:"AI 药物与医疗健康新闻流", newsSub:"按时间倒序排列。可通过每日更新任务刷新。", newsMetric1:"AI 药物发现市场规模（2026）", newsMetric2:"进入临床的 AI 原生项目", newsMetric3:"AI 分子 I 期成功率（历史均值约 52%）", newsMetric4:"完整 FDA 批准数量（首个预计 2026–27）",
+    overviewTitle:"什么是 AI 药物发现？", overviewSub:"概念、痛点，以及为什么现在进入关键窗口。", overviewOneTitle:"一句话解释", overviewOneBody:"用机器学习和生成式 AI 更快、更低成本地发现、设计和测试新药，减少传统反复试错的实验流程。", overviewConceptTitle:"核心概念", overviewProblem:"行业痛点", overviewProblemBody:"传统新药研发通常需要约 10–15 年，成本常超过 10–20 亿美元，并且约 90% 的候选药物会在临床阶段失败。", overviewIdea:"核心思路", overviewIdeaBody:"生物学产生大量数据（基因组、蛋白、细胞图像、化合物库）。AI 学习其中规律，预测哪些分子可能有效，用计算替代一部分缓慢的物理筛选。", overviewPayoff:"潜在价值", overviewPayoffBody:"提高命中率并压缩研发周期。早期数据显示 AI 分子 I 期成功率可达 80–90%，高于约 52% 的历史均值。", overviewWhyNow:"为什么是现在（2024–26）", overviewWhyNowBody:"三件事同时成熟：蛋白结构预测（AlphaFold 3）、生成式分子/蛋白模型（RFdiffusion、Chemistry42），以及大规模低成本 GPU 算力（NVIDIA + Lilly、Roche 等）。",
+    pipelineTitle:"AI 覆盖的新药研发流程", pipelineSub:"AI 在六个制药阶段中的作用位置。", stage1:"阶段 1", stage1Title:"靶点发现", stage1Body:"寻找疾病的生物“杠杆”（通常是蛋白或基因）。AI 挖掘基因组和疾病数据，例如 Insilico 的 PandaOmics。", stage2:"阶段 2", stage2Title:"Hit 发现", stage2Body:"虚拟筛选用计算方式扫描大量化合物库，而不是把数百万分子都做实体实验。", stage3:"阶段 3", stage3Title:"Lead 优化", stage3Body:"优化候选物的效力、安全性和成药性。生成式 AI 可设计新分子，例如 Chemistry42、RFdiffusion。", stage4:"阶段 4", stage4Title:"临床前（ADMET）", stage4Body:"预测吸收、代谢和毒性，更早淘汰差候选物。FDA 也在试点评估 AI 药物性肝损伤（DILI）预测工具。", stage5:"阶段 5", stage5Title:"临床试验", stage5Body:"AI 帮助设计试验、招募患者、选择生物标志物和预测结果，是 2026 年的重要验证场。", stage6:"阶段 6", stage6Title:"生产制造", stage6Body:"数字孪生和 AI 优化生产、制剂和放大工艺，例如 Roche/NVIDIA AI factory。",
+    lanesTitle:"主要技术赛道", lanesSub:"不同公司押注 AI 发现药物的不同路径，以及各赛道代表玩家。", lane1Title:"结构基础模型", lane1Body:"预测蛋白/分子的 3D 结构及其结合方式（AlphaFold 路线）。<b>代表：</b>Isomorphic Labs (IsoDDE)、Chai (Chai-1)、Boltz（开源）。", lane2Title:"生物数据 / 表型组学", lane2Body:"运行大规模自动化细胞/实验室实验，从图像和读数中学习规律。<b>代表：</b>Recursion、insitro、Eikon。", lane3Title:"生成式化学", lane3Body:"从零设计能够命中靶点的新分子。<b>代表：</b>Insilico Medicine (Chemistry42)、Iambic (NeuralPLexer)。", lane4Title:"蛋白设计", lane4Body:"构建全新的蛋白或结合体。<b>代表：</b>Xaira (RFdiffusion)、Generate:Biomedicines。", lane5Title:"物理 + AI 模拟", lane5Body:"结合量子/物理模拟与机器学习，提高预测准确性。<b>代表：</b>XtalPi。", lane6Title:"大药企 + 算力", lane6Body:"大型药企购买 GPU 算力并与 AI 原生公司合作。<b>代表：</b>Eli Lilly (+NVIDIA)、Roche (+NVIDIA)、Novartis (+Isomorphic)。",
+    companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月10日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。",
+    allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
+    relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
+    chatTitle:"AI 对话 / 站点编辑栏", chatSub:"把这里作为网站指挥中心：请求更新、草拟新公司条目、保存本地备注。", chatWelcome:"我是这个 HTML 里的本地演示助手。为了不消耗站点所有者的 token，每个访问者都可以在右侧连接自己的 AI 接口，或嵌入另一个聊天机器人。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用后端接口或外部聊天机器人链接。不要把私密 API key 粘贴到公开 HTML 页面里。", aiModeLabel:"聊天模式", aiModeDemo:"本地演示回复", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"备注会自动保存在本浏览器 localStorage。静态网站若不连接后端、CMS、GitHub 工作流或托管数据库，无法真正自我更新。",
+    glossaryTitle:"术语表", glossarySub:"关键术语的通俗解释。",
+    of:"/", companies:"家公司", noMatches:"没有匹配结果。", sources:"来源", pipeline:"管线", products:"产品", ticker:"股票代码", ipo:"IPO / 上市", valuation:"估值视角", models:"使用模型", funding:"融资", relationships:"合作关系", thesis:"PE 投资观点", product:"产品",
+    thCompany:"公司", thStock:"股票 / 报价", thIpo:"IPO 状态", thProduct:"产品 / 平台", thScore:"评分", thThesis:"PE 投资观点",
+    settingsSaved:"AI 设置已保存在当前浏览器。", settingsCleared:"AI 设置已清除。", invalidUrl:"请输入有效的 http(s) URL。本地测试可用 http://localhost。", apiMissing:"请先选择 API 模式，并粘贴你的 API 接口 URL。", embedMissing:"请先选择嵌入模式，并粘贴聊天机器人 URL。", apiThinking:"正在发送到你的 AI 接口...", apiError:"无法访问该接口。请检查 CORS、URL，以及接口是否接受 POST JSON。", embedReady:"外部聊天机器人已在下方加载。请直接使用该聊天窗口。", embedModeReply:"当前是嵌入模式。请使用右侧外部聊天机器人窗口。",
+    chatDefault:"当前是演示模式。若要使用真实模型且不消耗站点所有者 token，请在 AI 接入中选择 API 接口模式或嵌入模式。",
+    chatRecursion:"Recursion 是这里最清晰的上市纯 AI 药物发现可比公司：2021年4月20日在 NASDAQ 上市，生物数据平台曝光度强；关键尽调问题是临床读数和现金 runway 是否支撑平台估值。",
+    chatInsilico:"Insilico 是本追踪器中 AI 原生临床故事最成熟的公司：2025年底在港交所上市，Rentosertib 进入三期，并有大型 Lilly 合作。写投资备忘录前请刷新港交所价格和试验细节。",
+    chatAdd:"如需添加公司，可复制脚本中的一个 company 对象，然后填写 name、country、type、stage、ticker、ipo、quoteUrl、score、products、pipeline、rel、thesis 和 sources。也可以直接让 Codex 添加目标公司。",
+    chatDomain:"域名无法天然永久有效。最接近的做法是注册 10 年、开启自动续费、设置注册商锁、备用付款方式，并将托管绑定到 GitHub/Sites/Netlify/Vercel 和定时数据刷新。"
+  }
+};
+
+let currentLang = localStorage.getItem('aiDrugDiscoveryLang') || 'en';
+const tr = key => (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+
+function applyLanguage(){
+  document.documentElement.lang = currentLang === 'zh' ? 'zh-Hans' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.innerHTML = tr(el.dataset.i18n); });
+  document.getElementById('langEn').classList.toggle('active',currentLang==='en');
+  document.getElementById('langZh').classList.toggle('active',currentLang==='zh');
+  search.placeholder = tr('searchPlaceholder');
+  chatText.placeholder = currentLang === 'zh' ? '例如：更新 Insilico 股价信息、添加一家公司、比较 RXRX 和 3696...' : 'Ask: update Insilico stock info, add a company, compare RXRX vs 3696...';
+  apiEndpoint.placeholder = currentLang === 'zh' ? 'https://你的域名.com/api/chat' : 'https://your-domain.com/api/chat';
+  embedUrl.placeholder = currentLang === 'zh' ? 'https://chatbot.example.com/share/...' : 'https://chatbot.example.com/share/...';
+  notes.placeholder = currentLang === 'zh' ? '站点管理备注只保存在当前浏览器。' : 'Owner notes are saved in this browser only.';
+  renderFilters();
+  render();
+  renderNews();
+  renderInvestor();
+  renderGlossary();
+  renderRelationships();
+  applyAiSettings();
+}
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('aiDrugDiscoveryLang',lang);
+  applyLanguage();
+}
+
+function showPage(id){
+  document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
+  const active=document.querySelector(`.nav a[data-p="${id}"]`);
+  if(active) active.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>showPage(a.dataset.p));
+
+const uniq=k=>[...new Set(companies.map(c=>c[k]))].sort();
+function coZh(c){return currentLang==='zh' ? {...c,...(companyZh[c.name]||{}),name:c.name,ticker:c.ticker,quoteUrl:c.quoteUrl,score:c.score,src:c.src} : c;}
+function displayTicker(ticker){
+  if(currentLang!=='zh') return ticker;
+  if(ticker==='Private') return '未上市';
+  if(ticker==='Public; ticker needs refresh') return '上市公司；ticker 需刷新';
+  return ticker;
+}
+function labelValue(value){
+  if(currentLang!=='zh') return value;
+  const maps={
+    "AI-native":"AI 原生公司","Startup":"初创公司","AI + physics":"AI + 物理","Big pharma":"大型药企","Infrastructure":"基础设施",
+    "UK":"英国","USA":"美国","Hong Kong / China":"香港 / 中国","China":"中国","Switzerland":"瑞士","UK / USA":"英国 / 美国",
+    "Private":"私有","IPO (NASDAQ: RXRX)":"已上市（NASDAQ: RXRX）","IPO (HKEX: 3696)":"已上市（HKEX: 3696）","IPO (Feb 2026)":"已 IPO（2026年2月）","IPO (2026)":"已 IPO（2026）","IPO (HKEX: 2228)":"已上市（HKEX: 2228）","Public (NYSE: LLY)":"上市（NYSE: LLY）","Public (SIX/OTC)":"上市（SIX/OTC）","Public (NYSE: NVS)":"上市（NYSE: NVS）","Public (NASDAQ: NVDA)":"上市（NASDAQ: NVDA）","Part of Alphabet":"Alphabet 旗下"
+  };
+  return maps[value]||value;
+}
+function fillSel(id,vals,allKey){
+  const s=document.getElementById(id), keep=s.value;
+  s.innerHTML=`<option value="">${tr(allKey)}</option>`;
+  vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=labelValue(v);s.appendChild(o)});
+  s.value=keep;
+}
+function renderFilters(){
+  fillSel('fType',uniq('type'),'allTypes');
+  fillSel('fCountry',uniq('country'),'allCountries');
+  fillSel('fStage',uniq('stage'),'allStages');
+}
+renderFilters();
+
+function srcHtml(arr){return '<div class="src">'+tr('sources')+': '+arr.map(s=>`<a href="${s[1]}" target="_blank">${s[0]}</a>`).join('')+'</div>';}
+
+function render(){
+  const q=search.value.toLowerCase(),t=fType.value,c=fCountry.value,st=fStage.value;
+  const list=companies.filter(x=>
+    (!t||x.type===t)&&(!c||x.country===c)&&(!st||x.stage===st)&&
+    (!q||(x.name+x.focus+x.lane+x.pipeline+x.products+x.models+x.rel+JSON.stringify(companyZh[x.name]||{})).toLowerCase().includes(q)));
+  document.getElementById('count').textContent=currentLang==='zh' ? `${list.length} / ${companies.length} ${tr('companies')}` : `${list.length} ${tr('of')} ${companies.length} ${tr('companies')}`;
+  document.getElementById('colist').innerHTML=list.map((raw,i)=>{
+    const x=coZh(raw);
+    return `
+    <div class="co" data-i="${i}">
+      <div class="co-top">
+        <div>
+          <div class="co-name">${x.name}</div>
+          <div class="tags"><span class="tag country">${x.country}</span><span class="tag">${x.type}</span><span class="tag stage">${x.stage}</span></div>
+          <div class="co-focus">${x.focus}</div>
+        </div>
+        <div class="chev">▶</div>
+      </div>
+      <div class="detail">
+        <div class="drow"><div class="lb">${tr('pipeline')}</div><div class="vl">${x.pipeline}</div></div>
+        <div class="drow"><div class="lb">${tr('products')}</div><div class="vl">${x.products}</div></div>
+        <div class="drow"><div class="lb">${tr('ticker')}</div><div class="vl">${displayTicker(x.ticker)} · <a href="${x.quoteUrl}" target="_blank">${x.quote}</a></div></div>
+        <div class="drow"><div class="lb">${tr('ipo')}</div><div class="vl">${x.ipo}</div></div>
+        <div class="drow"><div class="lb">${tr('valuation')}</div><div class="vl">${x.valuation}</div></div>
+        <div class="drow"><div class="lb">${tr('models')}</div><div class="vl">${x.models}</div></div>
+        <div class="drow"><div class="lb">${tr('funding')}</div><div class="vl">${x.fund}</div></div>
+        <div class="drow"><div class="lb">${tr('relationships')}</div><div class="vl">${x.rel}</div></div>
+        <div class="drow"><div class="lb">${tr('thesis')}</div><div class="vl">${x.thesis}</div></div>
+        ${srcHtml(x.src)}
+      </div>
+    </div>`}).join('')||`<p style="color:#6b7280">${tr('noMatches')}</p>`;
+  document.querySelectorAll('.co').forEach(co=>{
+    co.querySelector('.co-top').onclick=()=>co.classList.toggle('open');
+  });
+}
+[search,fType,fCountry,fStage].forEach(el=>el.addEventListener('input',render));
+render();
+
+function renderNews(){
+  const items=currentLang==='zh' ? newsZh : news;
+  document.getElementById('newslist').innerHTML=items.map(n=>`
+    <div class="newsitem"><div class="date">${n[0]}</div>
+    <div class="body">${n[1]}${srcHtml(n[2])}</div></div>`).join('');
+}
+renderNews();
+
+function renderRelationships(){
+  const items=currentLang==='zh' ? relationshipsZh : relationships;
+  document.getElementById('rellist').innerHTML=items.map(r=>`
+    <div class="rel"><h3>${r[0]}</h3><p>${r[1]}</p></div>`).join('');
+}
+renderRelationships();
+
+function renderGlossary(){
+  const items=currentLang==='zh' ? glossaryZh : glossary;
+  document.getElementById('gllist').innerHTML=items.map(g=>`<div class="gl"><b>${g[0]}</b><span>${g[1]}</span></div>`).join('');
+}
+renderGlossary();
+
+function renderInvestor(){
+  const rows=[...companies].sort((a,b)=>b.score-a.score).map(raw=>{
+    const x=coZh(raw);
+    return `
+    <tr>
+      <td><b>${x.name}</b><br><span class="mini">${x.country} · ${x.type}</span></td>
+      <td>${displayTicker(x.ticker)}<br><a href="${x.quoteUrl}" target="_blank">${x.quote}</a></td>
+      <td>${x.ipo}</td>
+      <td>${x.products}</td>
+      <td><span class="score">${x.score}</span></td>
+      <td>${x.thesis}</td>
+    </tr>`}).join('');
+  document.getElementById('investTable').innerHTML=`
+    <thead><tr><th>${tr('thCompany')}</th><th>${tr('thStock')}</th><th>${tr('thIpo')}</th><th>${tr('thProduct')}</th><th>${tr('thScore')}</th><th>${tr('thThesis')}</th></tr></thead>
+    <tbody>${rows}</tbody>`;
+  document.getElementById('watchlist').innerHTML=companies
+    .filter(x=>x.score>=70)
+    .sort((a,b)=>b.score-a.score)
+    .map(raw=>{const x=coZh(raw); return `<div class="rel"><h3>${x.name} <span class="score">${x.score}</span></h3><p>${x.thesis}</p><p class="mini"><b>${tr('product')}:</b> ${x.products}</p></div>`})
+    .join('');
+}
+renderInvestor();
+
+function quickPrompt(text){
+  chatText.value=text;
+  chatText.focus();
+}
+
+function quickPromptKey(key){
+  quickPrompt(tr(key));
+}
+
+function escapeHtml(text){
+  return String(text).replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]));
+}
+
+function addChatMessage(role,text){
+  chatlog.insertAdjacentHTML('beforeend',`<div class="msg ${role}">${escapeHtml(text)}</div>`);
+  chatlog.scrollTop=chatlog.scrollHeight;
+}
+
+function validUrl(url){
+  try{
+    const parsed=new URL(url);
+    return parsed.protocol==='https:' || parsed.hostname==='localhost' || parsed.hostname==='127.0.0.1';
+  }catch(e){return false}
+}
+
+function saveAiSettings(){
+  const mode=aiMode.value;
+  const endpoint=apiEndpoint.value.trim();
+  const embed=embedUrl.value.trim();
+  if(mode==='api' && endpoint && !validUrl(endpoint)){ addChatMessage('ai',tr('invalidUrl')); return; }
+  if(mode==='embed' && embed && !validUrl(embed)){ addChatMessage('ai',tr('invalidUrl')); return; }
+  localStorage.setItem('aiDrugDiscoveryAiMode',mode);
+  localStorage.setItem('aiDrugDiscoveryApiEndpoint',endpoint);
+  localStorage.setItem('aiDrugDiscoveryEmbedUrl',embed);
+  applyAiSettings();
+  addChatMessage('ai',tr('settingsSaved'));
+}
+
+function clearAiSettings(){
+  localStorage.removeItem('aiDrugDiscoveryAiMode');
+  localStorage.removeItem('aiDrugDiscoveryApiEndpoint');
+  localStorage.removeItem('aiDrugDiscoveryEmbedUrl');
+  aiMode.value='demo';
+  apiEndpoint.value='';
+  embedUrl.value='';
+  applyAiSettings();
+  addChatMessage('ai',tr('settingsCleared'));
+}
+
+function applyAiSettings(){
+  const mode=localStorage.getItem('aiDrugDiscoveryAiMode')||'demo';
+  const endpoint=localStorage.getItem('aiDrugDiscoveryApiEndpoint')||'';
+  const embed=localStorage.getItem('aiDrugDiscoveryEmbedUrl')||'';
+  aiMode.value=mode;
+  apiEndpoint.value=endpoint;
+  embedUrl.value=embed;
+  embedFrame.classList.toggle('active',mode==='embed' && !!embed);
+  embedFrame.src=(mode==='embed' && embed && validUrl(embed)) ? embed : 'about:blank';
+  document.querySelector('.chatbox').classList.toggle('chat-disabled',mode==='embed' && !!embed);
+}
+
+function extractAiReply(data){
+  if(typeof data==='string') return data;
+  return data.reply || data.message || data.text || data.answer ||
+    (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
+    (data.choices && data.choices[0] && data.choices[0].text) ||
+    JSON.stringify(data,null,2);
+}
+
+async function callUserEndpoint(text){
+  const endpoint=apiEndpoint.value.trim();
+  if(!endpoint){ addChatMessage('ai',tr('apiMissing')); return; }
+  if(!validUrl(endpoint)){ addChatMessage('ai',tr('invalidUrl')); return; }
+  addChatMessage('ai',tr('apiThinking'));
+  try{
+    const res=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        message:text,
+        language:currentLang,
+        page:"AI Drug Discovery WorkStation",
+        context:{companies,news,relationships}
+      })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const contentType=res.headers.get('content-type')||'';
+    const data=contentType.includes('application/json') ? await res.json() : await res.text();
+    addChatMessage('ai',extractAiReply(data));
+  }catch(err){
+    addChatMessage('ai',tr('apiError'));
+  }
+}
+
+function testAiConnection(){
+  saveAiSettings();
+  if(aiMode.value==='api'){
+    callUserEndpoint(currentLang==='zh' ? '请用一句话确认 API 已连接。' : 'Confirm the API endpoint is connected in one sentence.');
+  }else if(aiMode.value==='embed'){
+    if(!embedUrl.value.trim()) addChatMessage('ai',tr('embedMissing'));
+    else addChatMessage('ai',tr('embedReady'));
+  }else{
+    addChatMessage('ai',tr('chatDefault'));
+  }
+}
+
+function chatSend(){
+  const text=chatText.value.trim();
+  if(!text) return;
+  addChatMessage('you',text);
+  if(aiMode.value==='api'){
+    chatText.value='';
+    callUserEndpoint(text);
+    return;
+  }
+  if(aiMode.value==='embed' && embedUrl.value.trim()){
+    addChatMessage('ai',tr('embedModeReply'));
+    chatText.value='';
+    return;
+  }
+  const lower=text.toLowerCase();
+  let reply=tr('chatDefault');
+  if(lower.includes('recursion')||lower.includes('rxrx')) reply=tr('chatRecursion');
+  if(lower.includes('insilico')||lower.includes('3696')) reply=tr('chatInsilico');
+  if(lower.includes('add')||lower.includes('添加')) reply=tr('chatAdd');
+  if(lower.includes('domain')||lower.includes('域名')) reply=tr('chatDomain');
+  addChatMessage('ai',reply);
+  chatText.value='';
+}
+
+const savedNotes=localStorage.getItem('aiDrugDiscoveryNotes')||'';
+notes.value=savedNotes;
+notes.addEventListener('input',()=>localStorage.setItem('aiDrugDiscoveryNotes',notes.value));
+applyAiSettings();
+
+function downloadHtml(){
+  const blob=new Blob(['<!DOCTYPE html>\\n'+document.documentElement.outerHTML],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='AI_Drug_Discovery_WorkStation.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+applyLanguage();
+</script>
+</body>
 </html>
