@@ -56,11 +56,9 @@ on public.company_edits for delete
 to authenticated
 using (public.is_workspace_editor());
 
--- Add approved editors only in Supabase SQL Editor, not in this public repository.
--- Example:
--- insert into public.editor_allowlist (email) values
---   ('you@example.com'),
---   ('mentor@example.com')
--- on conflict (email) do nothing;
+insert into public.editor_allowlist (email) values
+  ('879083084@qq.com'),
+  ('kaelynwen5@gmail.com')
+on conflict (email) do nothing;
 
 alter publication supabase_realtime add table public.company_edits;
