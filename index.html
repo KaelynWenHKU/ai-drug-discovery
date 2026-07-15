@@ -148,6 +148,7 @@
   .stagegrid{gap:1px;background:var(--line)}.stage{border-radius:0;background:var(--card);padding:18px}.stage .n{font-size:9px;letter-spacing:.12em}.stage .t{font:600 13px "IBM Plex Sans","Noto Sans SC",sans-serif;color:var(--ink)}
   .smallbtn,.promptbtn,.chatinput button{border-radius:2px}.smallbtn.primary,.chatinput button{background:var(--ink);border-color:var(--ink)}.msg{border-radius:2px}.msg.you{background:var(--ink)}
   .official-link{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:4px 8px;border:1px solid #b7c3bc;color:var(--green);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;vertical-align:2px}.official-link:hover{background:#e2ece6;border-color:#7d9e8f}.official-link:after{content:"↗";font-size:10px}
+  .team-panel{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}.team-panel h3{margin-bottom:5px}.team-status{font-size:12px;color:var(--muted);margin:7px 0 12px;line-height:1.5}.team-status.ok{color:var(--green);font-weight:600}.team-form{display:none}.team-form.active{display:block}.team-form textarea{width:100%;min-height:100px;border:1px solid var(--line);border-radius:2px;padding:9px;font:12px/1.55 "IBM Plex Sans","Noto Sans SC",sans-serif;background:#fffdfa;resize:vertical}.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.team-panel .smallbtn[disabled]{opacity:.45;cursor:not-allowed}.team-divider{height:1px;background:var(--line);margin:13px 0}
   @media(max-width:900px){.sidebar{width:230px}.main{margin-left:230px}.ownerbar{left:230px}.invest-grid{grid-template-columns:1fr}}
   @media(max-width:720px){.sidebar{width:100%;position:static}.main{margin-left:0;padding:28px 18px}.ownerbar{position:static}.page:before{margin-top:10px}}
 </style>
@@ -340,6 +341,29 @@
         <button class="promptbtn" onclick="quickPromptKey('memoPromptText')" data-i18n="promptMemo">Investment memo prompt</button>
         <textarea id="notes" placeholder="Owner notes are saved in this browser only."></textarea>
         <div class="mini" data-i18n="notesHelp">Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.</div>
+        <div class="team-panel">
+          <h3 data-i18n="teamEditorTitle">Team data editor</h3>
+          <div class="team-status" id="teamStatus" data-i18n="teamEditorIntro">Connect with your approved editor email to update shared company research.</div>
+          <div id="teamAuth">
+            <div class="field"><label for="editorEmail" data-i18n="teamEmail">Editor email</label><input id="editorEmail" type="email" autocomplete="email" placeholder="you@firm.com"></div>
+            <div class="btnrow"><button class="smallbtn primary" onclick="sendEditorLink()" data-i18n="teamSendLink">Email me a sign-in link</button></div>
+          </div>
+          <div id="teamUser" style="display:none">
+            <div class="btnrow"><button class="smallbtn" onclick="signOutEditor()" data-i18n="teamSignOut">Sign out</button></div>
+          </div>
+          <div id="teamForm" class="team-form">
+            <div class="team-divider"></div>
+            <div class="team-grid">
+              <div class="field"><label for="editCompany" data-i18n="teamCompany">Company</label><select id="editCompany"></select></div>
+              <div class="field"><label for="editField" data-i18n="teamField">Research field</label><select id="editField">
+                <option value="focus" data-i18n="editFocus">Investment overview</option><option value="pipeline" data-i18n="editPipeline">Pipeline</option><option value="products" data-i18n="editProducts">Product / platform</option><option value="models" data-i18n="editModels">Models / technology</option><option value="valuation" data-i18n="editValuation">Valuation</option><option value="fund" data-i18n="editFunding">Funding</option><option value="rel" data-i18n="editRelationships">Relationships</option><option value="thesis" data-i18n="editThesis">PE thesis</option>
+              </select></div>
+            </div>
+            <div class="field"><label for="editEn" data-i18n="teamEnglish">English</label><textarea id="editEn" placeholder="Shared English research text"></textarea></div>
+            <div class="field"><label for="editZh">中文</label><textarea id="editZh" placeholder="共享中文研究内容"></textarea></div>
+            <div class="btnrow"><button id="saveCompanyEdit" class="smallbtn primary" onclick="saveCompanyEdit()" data-i18n="teamPublish">Publish shared update</button></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -354,7 +378,12 @@
 </main>
 
 <script>
-const companies = [
+const SUPABASE_URL='https://nlkiukbfnqhdwteotlen.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_YA6D7dBqAn1V_HEh0G2Xpw_w6w2Bc2v';
+let supabaseClient=null;
+let teamEdits={};
+let supabaseReady=false;
+let companies = [
  {name:"Isomorphic Labs",country:"UK",type:"AI-native",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.isomorphiclabs.com/",score:78,valuation:"Private; $2.1B Series B in May 2026",lane:"Structure foundation models",fund:"$2.1B Series B (May 2026) + ~$600M prior",focus:"Drug design via AlphaFold-derived models; partners with big pharma rather than owning a full pipeline.",
   pipeline:"Oncology & immunology programs. First AI-designed drugs expected to enter clinical trials by end of 2026 (no human dosing yet).",
   products:"IsoDDE — the Isomorphic Drug Design Engine; co-developed AlphaFold 3.",
@@ -490,7 +519,7 @@ const companies = [
   src:[["Isomorphic — our tech","https://www.isomorphiclabs.com/our-tech"]]}
 ];
 
-const companyZh = {
+let companyZh = {
  "Isomorphic Labs":{country:"英国",type:"AI 原生公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；2026年5月完成 21 亿美元 B 轮融资",lane:"结构基础模型",fund:"2026年5月 21 亿美元 B 轮 + 此前约 6 亿美元",focus:"基于 AlphaFold 衍生模型进行药物设计；主要通过与大型药企合作，而不是完全自建管线。",
   pipeline:"肿瘤和免疫学项目。首批 AI 设计药物预计在 2026 年底前进入临床试验；目前尚无人体验证。",
   products:"IsoDDE（Isomorphic Drug Design Engine）；共同开发 AlphaFold 3。",
@@ -704,7 +733,7 @@ const I18N = {
     companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 15, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.", officialWebsite:"Official site",
     allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
     relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
-    chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.",
+    chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.", teamEditorTitle:"Team data editor", teamEditorIntro:"Sign in with an approved editor email to publish shared company research.", teamEmail:"Editor email", teamSendLink:"Email me a sign-in link", teamSignOut:"Sign out", teamCompany:"Company", teamField:"Research field", teamEnglish:"English", teamPublish:"Publish shared update", editFocus:"Investment overview", editPipeline:"Pipeline", editProducts:"Product / platform", editModels:"Models / technology", editValuation:"Valuation", editFunding:"Funding", editRelationships:"Relationships", editThesis:"PE thesis",
     glossaryTitle:"Glossary", glossarySub:"Plain-language definitions of the key terms.",
     of:"of", companies:"companies", noMatches:"No matches.", sources:"Sources", pipeline:"Pipeline", products:"Products", ticker:"Ticker", ipo:"IPO / listing", valuation:"Valuation view", models:"Models used", funding:"Funding", relationships:"Relationships", thesis:"PE thesis", product:"Product",
     thCompany:"Company", thStock:"Stock / quote", thIpo:"IPO status", thProduct:"Product / platform", thScore:"Score", thThesis:"PE thesis",
@@ -729,7 +758,7 @@ const I18N = {
     companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月15日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。", officialWebsite:"官网",
     allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
     relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
-    chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。",
+    chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。", teamEditorTitle:"团队数据编辑", teamEditorIntro:"使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。", teamEmail:"编辑者邮箱", teamSendLink:"发送登录链接到邮箱", teamSignOut:"退出登录", teamCompany:"公司", teamField:"研究字段", teamEnglish:"英文", teamPublish:"发布共享更新", editFocus:"投资概览", editPipeline:"管线", editProducts:"产品 / 平台", editModels:"模型 / 技术", editValuation:"估值", editFunding:"融资", editRelationships:"关系", editThesis:"PE 投资观点",
     glossaryTitle:"术语表", glossarySub:"关键术语的通俗解释。",
     of:"/", companies:"家公司", noMatches:"没有匹配结果。", sources:"来源", pipeline:"管线", products:"产品", ticker:"股票代码", ipo:"IPO / 上市", valuation:"估值视角", models:"使用模型", funding:"融资", relationships:"合作关系", thesis:"PE 投资观点", product:"产品",
     thCompany:"公司", thStock:"股票 / 报价", thIpo:"IPO 状态", thProduct:"产品 / 平台", thScore:"评分", thThesis:"PE 投资观点",
@@ -781,7 +810,19 @@ function showPage(id){
 document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>showPage(a.dataset.p));
 
 const uniq=k=>[...new Set(companies.map(c=>c[k]))].sort();
-function coZh(c){return currentLang==='zh' ? {...c,...(companyZh[c.name]||{}),name:c.name,ticker:c.ticker,quoteUrl:c.quoteUrl,score:c.score,src:c.src} : c;}
+function editedCompany(c){
+  const edits=teamEdits[c.name]||{};
+  const en={};
+  Object.entries(edits).forEach(([field,value])=>{if(value.content_en) en[field]=value.content_en;});
+  return {...c,...en};
+}
+function coZh(c){
+  const base=editedCompany(c);
+  if(currentLang!=='zh') return base;
+  const zh={...(companyZh[c.name]||{})};
+  Object.entries(teamEdits[c.name]||{}).forEach(([field,value])=>{if(value.content_zh) zh[field]=value.content_zh;});
+  return {...base,...zh,name:c.name,ticker:c.ticker,quoteUrl:c.quoteUrl,score:c.score,src:c.src};
+}
 function displayTicker(ticker){
   if(currentLang!=='zh') return ticker;
   if(ticker==='Private') return '未上市';
@@ -1029,6 +1070,98 @@ notes.value=savedNotes;
 notes.addEventListener('input',()=>localStorage.setItem('aiDrugDiscoveryNotes',notes.value));
 applyAiSettings();
 
+let teamSession=null;
+let isTeamEditor=false;
+function teamMessage(key, fallback, good=false){
+  const el=document.getElementById('teamStatus');
+  if(!el) return;
+  el.textContent=key ? tr(key) : fallback;
+  el.classList.toggle('ok',good);
+}
+function populateTeamCompanies(){
+  const select=document.getElementById('editCompany');
+  if(!select || select.options.length) return;
+  companies.forEach(c=>{
+    const option=document.createElement('option'); option.value=c.name; option.textContent=c.name; select.appendChild(option);
+  });
+  select.addEventListener('change',loadEditInputs);
+  document.getElementById('editField').addEventListener('change',loadEditInputs);
+}
+function loadEditInputs(){
+  const name=document.getElementById('editCompany').value;
+  const field=document.getElementById('editField').value;
+  const raw=companies.find(c=>c.name===name)||{};
+  const saved=(teamEdits[name]||{})[field]||{};
+  document.getElementById('editEn').value=saved.content_en || raw[field] || '';
+  document.getElementById('editZh').value=saved.content_zh || (companyZh[name]||{})[field] || '';
+}
+async function loadCompanyEdits(){
+  if(!supabaseClient) return;
+  const {data,error}=await supabaseClient.from('company_edits').select('company_name,field,content_en,content_zh,updated_at');
+  if(error){
+    teamMessage('', currentLang==='zh' ? '团队编辑器正在连接：请先在 Supabase SQL Editor 运行项目中的 schema.sql。' : 'Team editor is ready to connect: run schema.sql once in Supabase SQL Editor first.');
+    return;
+  }
+  teamEdits={};
+  (data||[]).forEach(edit=>{(teamEdits[edit.company_name] ||= {})[edit.field]=edit;});
+  render(); renderInvestor(); loadEditInputs();
+}
+async function syncTeamSession(session){
+  teamSession=session||null;
+  const auth=document.getElementById('teamAuth');
+  const user=document.getElementById('teamUser');
+  const form=document.getElementById('teamForm');
+  if(!teamSession){
+    isTeamEditor=false; auth.style.display='block'; user.style.display='none'; form.classList.remove('active');
+    teamMessage('',currentLang==='zh'?'使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。':'Sign in with an approved editor email to publish shared company research.');
+    return;
+  }
+  auth.style.display='none'; user.style.display='block';
+  const {data,error}=await supabaseClient.rpc('is_workspace_editor');
+  isTeamEditor=!error && data===true;
+  form.classList.toggle('active',isTeamEditor);
+  if(isTeamEditor){
+    teamMessage('',currentLang==='zh'?`已登录：${teamSession.user.email}。你可以发布团队共享更新。`:`Signed in as ${teamSession.user.email}. You can publish shared updates.`,true);
+    populateTeamCompanies(); loadEditInputs();
+  }else{
+    teamMessage('',currentLang==='zh'?`已登录：${teamSession.user.email}。等待管理员将此邮箱加入编辑权限名单。`:`Signed in as ${teamSession.user.email}. Waiting for an administrator to add this email to the editor allowlist.`);
+  }
+}
+async function initializeSupabase(){
+  try{
+    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    supabaseClient=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+    supabaseReady=true;
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    await syncTeamSession(session);
+    await loadCompanyEdits();
+    supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>syncTeamSession(session),0);});
+    supabaseClient.channel('company-edits-live')
+      .on('postgres_changes',{event:'*',schema:'public',table:'company_edits'},()=>loadCompanyEdits())
+      .subscribe();
+  }catch(_error){
+    teamMessage('',currentLang==='zh'?'团队编辑器暂时无法连接。请刷新页面后重试。':'The team editor could not connect. Please refresh and try again.');
+  }
+}
+async function sendEditorLink(){
+  const email=document.getElementById('editorEmail').value.trim();
+  if(!email || !email.includes('@')){teamMessage('',currentLang==='zh'?'请输入有效的编辑者邮箱。':'Enter a valid editor email.');return;}
+  if(!supabaseClient){teamMessage('',currentLang==='zh'?'连接仍在初始化，请稍后再试。':'The connection is still starting. Please try again in a moment.');return;}
+  const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href}});
+  teamMessage('',error?(currentLang==='zh'?'登录链接暂时无法发送，请检查 Supabase 的登录设置。':'The sign-in link could not be sent. Check the Supabase authentication settings.'):(currentLang==='zh'?'登录链接已发送。请从邮箱打开链接，然后返回此页面。':'Sign-in link sent. Open it from your email, then return to this page.'),!error);
+}
+async function signOutEditor(){if(supabaseClient) await supabaseClient.auth.signOut();}
+async function saveCompanyEdit(){
+  if(!supabaseClient||!teamSession||!isTeamEditor) return;
+  const button=document.getElementById('saveCompanyEdit'); button.disabled=true;
+  const row={company_name:document.getElementById('editCompany').value,field:document.getElementById('editField').value,content_en:document.getElementById('editEn').value.trim(),content_zh:document.getElementById('editZh').value.trim(),updated_by:teamSession.user.id,updated_at:new Date().toISOString()};
+  const {error}=await supabaseClient.from('company_edits').upsert(row,{onConflict:'company_name,field'});
+  button.disabled=false;
+  if(error){teamMessage('',currentLang==='zh'?'无法发布更新。请确认你的邮箱已加入编辑权限名单。':'Could not publish the update. Confirm that your email is on the editor allowlist.');return;}
+  (teamEdits[row.company_name] ||= {})[row.field]=row;
+  render();renderInvestor();teamMessage('',currentLang==='zh'?'共享更新已发布，并会同步给其他打开此网站的编辑者。':'Shared update published and synced to other open workstations.',true);
+}
+
 function downloadHtml(){
   const blob=new Blob(['<!DOCTYPE html>\\n'+document.documentElement.outerHTML],{type:'text/html'});
   const url=URL.createObjectURL(blob);
@@ -1039,6 +1172,7 @@ function downloadHtml(){
   URL.revokeObjectURL(url);
 }
 applyLanguage();
+initializeSupabase();
 </script>
 </body>
 </html>
