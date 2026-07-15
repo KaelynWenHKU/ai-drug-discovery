@@ -197,7 +197,7 @@
   <section class="page active" id="dashboard">
     <h2 class="page-title" data-i18n="dashTitle">PE investor dashboard</h2>
     <p class="page-sub" data-i18n="dashSub">Public comps, IPO status, platform/product depth, and diligence notes in one view.</p>
-    <div class="note" data-i18n="dashNote">Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.</div>
+    <div class="note" data-i18n="dashNote">Data policy · Company, financing, clinical and market fields are reviewed every day at 08:30 HKT. Every material claim retains a direct source link and dated context for IC use.</div>
     <div class="metrics">
       <div class="metric"><div class="v">19</div><div class="l" data-i18n="dashMetric1">Companies and strategic comps tracked</div></div>
       <div class="metric"><div class="v">9</div><div class="l" data-i18n="dashMetric2">Private AI-native targets</div></div>
@@ -301,7 +301,7 @@
     <div class="chat-shell">
       <div class="chatbox">
         <div class="chatlog" id="chatlog">
-          <div class="msg ai" data-i18n="chatWelcome">I am a local demo assistant inside this HTML. For real AI chat, connect this panel to an OpenAI/Codex backend endpoint. For now I can draft update instructions, summarize the tracked company data, and prepare text you can paste into Codex.</div>
+          <div class="msg ai" data-i18n="chatWelcome">AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.</div>
         </div>
         <div class="chatinput">
           <textarea id="chatText" placeholder="Ask: update Insilico stock info, add a company, compare RXRX vs 3696..."></textarea>
@@ -314,7 +314,7 @@
           <div class="field">
             <label for="aiMode" data-i18n="aiModeLabel">Chat mode</label>
             <select id="aiMode">
-              <option value="demo" data-i18n="aiModeDemo">Local demo replies</option>
+              <option value="demo" data-i18n="aiModeDemo">Research prompt workspace</option>
               <option value="api" data-i18n="aiModeApi">Use my API endpoint</option>
               <option value="embed" data-i18n="aiModeEmbed">Embed another chatbot</option>
             </select>
@@ -339,7 +339,7 @@
         <button class="promptbtn" onclick="quickPromptKey('addCompanyPromptText')" data-i18n="promptAdd">Add company prompt</button>
         <button class="promptbtn" onclick="quickPromptKey('memoPromptText')" data-i18n="promptMemo">Investment memo prompt</button>
         <textarea id="notes" placeholder="Owner notes are saved in this browser only."></textarea>
-        <div class="mini" data-i18n="notesHelp">Notes autosave to localStorage. Static websites cannot truly self-update unless connected to a backend, CMS, GitHub workflow, or hosted database.</div>
+        <div class="mini" data-i18n="notesHelp">Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.</div>
       </div>
     </div>
   </section>
@@ -694,7 +694,7 @@ const I18N = {
     ownerStatus:"Private markets workstation · data snapshot Jul 15 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
     updated:"Investment Workstation · updated Jul 15 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
     sideFoot:"Snapshot — figures move fast. Ask Codex/AI to refresh public data before investment decisions.",
-    dashTitle:"PE investor dashboard", dashSub:"Public comps, IPO status, platform/product depth, and diligence notes in one view.", dashNote:"Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.",
+    dashTitle:"PE investor dashboard", dashSub:"Public comps, IPO status, platform/product depth, and diligence notes in one view.", dashNote:"Data policy · Company, financing, clinical and market fields are reviewed every day at 08:30 HKT. Every material claim retains a direct source link and dated context for IC use.",
     dashMetric1:"Companies and strategic comps tracked", dashMetric2:"Private AI-native targets", dashMetric3:"Most advanced AI-originated drug stage", dashMetric4:"Most active strategic buyer/partner",
     investScreen:"Investability screen", diligenceLens:"PE diligence lens", watch1Title:"Best near-term public comp", watch1Body:"Recursion: liquid pure-play, but clinical execution and cash burn matter more than platform narrative.", watch2Title:"Best late-stage AI-originated asset", watch2Body:"Insilico: Rentosertib in Phase III for IPF; check trial geography, endpoints, and partner economics.", watch3Title:"Strategic acquirer signal", watch3Body:"Lilly, Roche, Novartis and Bayer deals validate platforms, but milestone-heavy deal values can overstate near-term economics.", watch4Title:"Exit timing", watch4Body:"Private names need clear clinical proof or platform revenue. IPO windows are open but selective for biotech.", watchlistPriorities:"Watchlist priorities",
     newsTitle:"AI drug & healthcare — news feed", newsSub:"Most recent first. Refreshed by the daily update task.", newsMetric1:"AI drug-discovery market (2026)", newsMetric2:"AI-originated programs in clinic", newsMetric3:"AI molecule Phase I success (vs ~52% historical)", newsMetric4:"Full FDA approvals yet (first expected 2026–27)",
@@ -704,7 +704,7 @@ const I18N = {
     companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 15, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.", officialWebsite:"Official site",
     allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
     relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
-    chatTitle:"AI chat / owner edit bar", chatSub:"Use this page as the website's command center: ask for updates, draft new company entries, and save local notes.", chatWelcome:"I am a local demo assistant inside this HTML. To avoid using the site owner's tokens, each viewer can connect their own AI endpoint or embed another chatbot from the panel on the right.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use a server endpoint or external chatbot link. Do not paste private API keys into a public HTML page.", aiModeLabel:"Chat mode", aiModeDemo:"Local demo replies", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Notes autosave to localStorage. Static websites cannot truly self-update unless connected to a backend, CMS, GitHub workflow, or hosted database.",
+    chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.",
     glossaryTitle:"Glossary", glossarySub:"Plain-language definitions of the key terms.",
     of:"of", companies:"companies", noMatches:"No matches.", sources:"Sources", pipeline:"Pipeline", products:"Products", ticker:"Ticker", ipo:"IPO / listing", valuation:"Valuation view", models:"Models used", funding:"Funding", relationships:"Relationships", thesis:"PE thesis", product:"Product",
     thCompany:"Company", thStock:"Stock / quote", thIpo:"IPO status", thProduct:"Product / platform", thScore:"Score", thThesis:"PE thesis",
@@ -719,7 +719,7 @@ const I18N = {
     ownerStatus:"私募市场工作站 · 数据快照 2026年7月15日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
     updated:"投资工作站 · 2026年7月15日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
     sideFoot:"数据变化很快。投资决策前请让 Codex/AI 刷新公开数据。",
-    dashTitle:"PE 投资人仪表盘", dashSub:"把公开可比公司、IPO 状态、产品/平台深度和尽调备注放在同一页面。", dashNote:"静态 HTML 不能自动保持实时股价。表格保存的是日期快照和报价链接；用于投委会材料或条款清单前请刷新价格。",
+    dashTitle:"PE 投资人仪表盘", dashSub:"把公开可比公司、IPO 状态、产品/平台深度和尽调备注放在同一页面。", dashNote:"数据更新政策 · 公司、融资、临床及市场字段每日香港时间 08:30 核验。所有重大信息保留直接来源与日期背景，供投委会材料使用。",
     dashMetric1:"已追踪公司和战略可比标的", dashMetric2:"私有 AI 原生标的", dashMetric3:"AI 原生药物最高临床阶段", dashMetric4:"最活跃战略买方 / 合作方",
     investScreen:"可投资性筛选", diligenceLens:"PE 尽调视角", watch1Title:"近期最佳公开可比", watch1Body:"Recursion：流动性较好的纯 AI 药物发现标的，但临床执行和现金消耗比平台叙事更重要。", watch2Title:"最成熟 AI 原生临床资产", watch2Body:"Insilico：Rentosertib 已进入 IPF 三期；需核查试验地区、终点设计和合作方经济权益。", watch3Title:"战略收购/合作信号", watch3Body:"Lilly、Roche、Novartis 和 Bayer 的交易验证了平台价值，但里程碑总额可能高估近期现金价值。", watch4Title:"退出节奏", watch4Body:"私有公司需要明确临床验证或平台收入。IPO 窗口已打开，但生物科技市场仍然很挑剔。", watchlistPriorities:"重点观察名单",
     newsTitle:"AI 药物与医疗健康新闻流", newsSub:"按时间倒序排列。可通过每日更新任务刷新。", newsMetric1:"AI 药物发现市场规模（2026）", newsMetric2:"进入临床的 AI 原生项目", newsMetric3:"AI 分子 I 期成功率（历史均值约 52%）", newsMetric4:"完整 FDA 批准数量（首个预计 2026–27）",
@@ -729,7 +729,7 @@ const I18N = {
     companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月15日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。", officialWebsite:"官网",
     allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
     relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
-    chatTitle:"AI 对话 / 站点编辑栏", chatSub:"把这里作为网站指挥中心：请求更新、草拟新公司条目、保存本地备注。", chatWelcome:"我是这个 HTML 里的本地演示助手。为了不消耗站点所有者的 token，每个访问者都可以在右侧连接自己的 AI 接口，或嵌入另一个聊天机器人。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用后端接口或外部聊天机器人链接。不要把私密 API key 粘贴到公开 HTML 页面里。", aiModeLabel:"聊天模式", aiModeDemo:"本地演示回复", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"备注会自动保存在本浏览器 localStorage。静态网站若不连接后端、CMS、GitHub 工作流或托管数据库，无法真正自我更新。",
+    chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。",
     glossaryTitle:"术语表", glossarySub:"关键术语的通俗解释。",
     of:"/", companies:"家公司", noMatches:"没有匹配结果。", sources:"来源", pipeline:"管线", products:"产品", ticker:"股票代码", ipo:"IPO / 上市", valuation:"估值视角", models:"使用模型", funding:"融资", relationships:"合作关系", thesis:"PE 投资观点", product:"产品",
     thCompany:"公司", thStock:"股票 / 报价", thIpo:"IPO 状态", thProduct:"产品 / 平台", thScore:"评分", thThesis:"PE 投资观点",
