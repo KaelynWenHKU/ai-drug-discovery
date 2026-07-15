@@ -380,6 +380,7 @@
 <script>
 const SUPABASE_URL='https://nlkiukbfnqhdwteotlen.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_YA6D7dBqAn1V_HEh0G2Xpw_w6w2Bc2v';
+const LIVE_SITE_URL='https://kaelynwenhku.github.io/ai-drug-discovery/';
 let supabaseClient=null;
 let teamEdits={};
 let supabaseReady=false;
@@ -1147,8 +1148,9 @@ async function sendEditorLink(){
   const email=document.getElementById('editorEmail').value.trim();
   if(!email || !email.includes('@')){teamMessage('',currentLang==='zh'?'请输入有效的编辑者邮箱。':'Enter a valid editor email.');return;}
   if(!supabaseClient){teamMessage('',currentLang==='zh'?'连接仍在初始化，请稍后再试。':'The connection is still starting. Please try again in a moment.');return;}
-  const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href}});
-  teamMessage('',error?(currentLang==='zh'?'登录链接暂时无法发送，请检查 Supabase 的登录设置。':'The sign-in link could not be sent. Check the Supabase authentication settings.'):(currentLang==='zh'?'登录链接已发送。请从邮箱打开链接，然后返回此页面。':'Sign-in link sent. Open it from your email, then return to this page.'),!error);
+  const redirectTo=window.location.protocol==='file:' ? LIVE_SITE_URL : window.location.href;
+  const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo}});
+  teamMessage('',error?(currentLang==='zh'?`登录链接暂时无法发送：${error.message}。请在 Supabase Authentication → URL Configuration 添加正式网站地址。`:`The sign-in link could not be sent: ${error.message}. Add the live site URL in Supabase Authentication → URL Configuration.`):(currentLang==='zh'?'登录链接已发送。请从邮箱打开链接；它会自动回到正式网站。':'Sign-in link sent. Open it from your email; it will return to the live website.'),!error);
 }
 async function signOutEditor(){if(supabaseClient) await supabaseClient.auth.signOut();}
 async function saveCompanyEdit(){
