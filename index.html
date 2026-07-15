@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Drug Discovery — Work Station</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap');
   :root{
     --navy:#1f3864; --blue:#2e5496; --accent:#3b6db3;
     --bg:#f6f7fb; --card:#ffffff; --line:#e4e8f0;
@@ -131,12 +132,29 @@
   .mini{font-size:12px;color:var(--muted);margin-top:7px}
   @media(max-width:900px){.invest-grid,.chat-shell{grid-template-columns:1fr}.ownerbar{left:0;padding:10px 18px}.main{padding-top:96px}}
   @media(max-width:720px){.sidebar{width:100%;position:static;height:auto}.main{margin-left:0;padding:22px}.ownerbar{position:static;flex-wrap:wrap}.kv,.drow,.newsitem{grid-template-columns:1fr}}
+
+  /* Institutional PE research system */
+  :root{--navy:#111d2e;--blue:#243b5a;--accent:#276b5b;--bg:#f3f1ea;--card:#fffdfa;--line:#d8d4c8;--text:#1b252f;--muted:#69716f;--soft:#ebe9e1;--amber:#fff6d8;--amberln:#dfca81;--green:#1f7259;--red:#9a4238;--ink:#101922}
+  body{font-family:"Source Sans 3",sans-serif;background:radial-gradient(circle at 88% 2%,#dce8e1 0,transparent 24rem),var(--bg);font-size:14px}
+  .sidebar{width:268px;background:linear-gradient(180deg,#111d2e 0%,#142a31 100%);padding:26px 0;border-right:1px solid rgba(255,255,255,.08)}
+  .brand{padding:0 25px 24px;margin-bottom:18px}.brand h1{font:700 17px/1.25 "Libre Baskerville",serif;letter-spacing:-.02em}.brand span{color:#8da99e;font:500 10px/1.5 "Source Sans 3",sans-serif;letter-spacing:.1em;text-transform:uppercase}
+  .nav-label{color:#728d84;padding:17px 25px 6px;font-size:9px;letter-spacing:.16em;font-weight:700}.nav a{padding:10px 25px;color:#b9c7c2;border-left-width:2px}.nav a:hover{background:rgba(255,255,255,.055)}.nav a.active{background:linear-gradient(90deg,rgba(113,171,144,.18),transparent);border-left-color:#c5a75e;color:#fff}
+  .side-foot{padding:18px 25px 0;color:#789087;font-size:10px;letter-spacing:.02em}.main{margin-left:268px;padding:102px 4vw 70px;max-width:1440px}.ownerbar{left:268px;padding:13px 4vw;background:rgba(243,241,234,.91);box-shadow:none;border-color:var(--line)}
+  .ownerbar .status{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700}.ownerbar button,.ownerbar a.button{border-radius:3px;background:transparent;border-color:#c8c4b8;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;font-size:9px;padding:9px 12px}.ownerbar button.primary{background:var(--ink);border-color:var(--ink)}.lang-switch{border-radius:3px;background:transparent}.lang-switch button{border-radius:1px}.lang-switch button.active{background:var(--ink)}
+  h2.page-title{font:700 clamp(29px,3vw,43px)/1.12 "Libre Baskerville",serif;color:var(--ink);letter-spacing:-.035em;margin-bottom:9px}.page-sub{font-size:15px;max-width:760px;margin-bottom:30px}.page:before{content:"PRIVATE MARKETS / AI-ENABLED BIOPHARMA";display:block;color:var(--green);font-size:9px;letter-spacing:.18em;font-weight:700;margin-bottom:13px}
+  .note{border-radius:2px;border:0;border-left:3px solid #c5a75e;background:#f6edcf;color:#61552f;padding:12px 16px}.metrics{gap:1px;background:var(--line);border:1px solid var(--line)}.metric{border-radius:0;background:var(--card);padding:18px 20px}.metric .v{font:700 25px/1 "Libre Baskerville",serif;color:var(--ink)}.metric .l{text-transform:uppercase;letter-spacing:.08em;font-size:9px;margin-top:9px;font-weight:700}
+  .card,.co,.rel,.gl,.newsitem,.chatbox,.watch{border-radius:2px;background:rgba(255,253,250,.96);box-shadow:0 9px 28px rgba(17,29,46,.035)}.card{padding:23px 25px}.card h3{font:700 15px/1.3 "Libre Baskerville",serif;color:var(--ink)}.invest-grid{grid-template-columns:minmax(0,1.6fr) minmax(300px,.7fr);gap:18px}.tablewrap{border-radius:0}.tablewrap table{min-width:980px}th{background:#182638;color:#e9eee9;font-size:9px;letter-spacing:.1em;padding:12px}td{padding:13px 12px}.score{border-radius:50%;width:32px;height:32px;background:#dcebe3;color:#155f49;font-family:"Libre Baskerville",serif}.watch{border-left:3px solid #c5a75e}.watch b{font-family:"Libre Baskerville",serif;font-size:12px}
+  .toolbar{padding:13px;background:#e8e5db;border:1px solid var(--line)}.toolbar input,.toolbar select{border-radius:2px;background:var(--card);border-color:#cbc7ba}.co{padding:18px 21px}.co:hover{border-color:#aeb9b0;transform:translateY(-1px)}.co-name{font:700 16px "Libre Baskerville",serif;color:var(--ink)}.tag{border-radius:2px;text-transform:uppercase;letter-spacing:.05em;font-size:9px;background:#e8ece8;color:#38574d}.tag.stage{background:#dceadf}.tag.country{background:#eee7d8;color:#6b5835}.detail{background:#f4f2eb;margin:15px -21px -18px;padding:18px 21px}.drow{grid-template-columns:140px 1fr}.drow .lb{text-transform:uppercase;letter-spacing:.07em;font-size:9px;color:#617169}.newsitem{border-left:3px solid var(--green);grid-template-columns:120px 1fr}.newsitem .date{font-size:10px;letter-spacing:.08em;text-transform:uppercase}.rel{border-left:2px solid #c5a75e}.rel h3{font-family:"Libre Baskerville",serif;color:var(--ink)}
+  .stagegrid{gap:1px;background:var(--line)}.stage{border-radius:0;background:var(--card);padding:18px}.stage .n{font-size:9px;letter-spacing:.12em}.stage .t{font:700 13px "Libre Baskerville",serif;color:var(--ink)}
+  .smallbtn,.promptbtn,.chatinput button{border-radius:2px}.smallbtn.primary,.chatinput button{background:var(--ink);border-color:var(--ink)}.msg{border-radius:2px}.msg.you{background:var(--ink)}
+  @media(max-width:900px){.sidebar{width:230px}.main{margin-left:230px}.ownerbar{left:230px}.invest-grid{grid-template-columns:1fr}}
+  @media(max-width:720px){.sidebar{width:100%;position:static}.main{margin-left:0;padding:28px 18px}.ownerbar{position:static}.page:before{margin-top:10px}}
 </style>
 </head>
 <body>
 
 <div class="ownerbar">
-  <div class="status" data-i18n="ownerStatus">Owner controls · local HTML · data snapshot Jul 10 2026</div>
+  <div class="status" data-i18n="ownerStatus">Private markets workstation · data snapshot Jul 15 2026</div>
   <div class="lang-switch" aria-label="Language">
     <button id="langEn" class="active" onclick="setLang('en')">EN</button>
     <button id="langZh" onclick="setLang('zh')">中文</button>
@@ -149,12 +167,12 @@
 <nav class="sidebar">
   <div class="brand">
     <h1>AI Drug Discovery</h1>
-    <span id="upd" data-i18n="updated">Work Station · updated Jul 10 2026</span>
+    <span id="upd" data-i18n="updated">Investment Workstation · updated Jul 15 2026</span>
   </div>
   <div class="nav-label" data-i18n="navDaily">Daily</div>
   <div class="nav">
-    <a data-p="dashboard"><span class="ic">▣</span> <span data-i18n="navDashboard">Investor dashboard</span></a>
-    <a data-p="news" class="active"><span class="ic">◆</span> <span data-i18n="navNews">News feed</span></a>
+    <a data-p="dashboard" class="active"><span class="ic">▣</span> <span data-i18n="navDashboard">Investor dashboard</span></a>
+    <a data-p="news"><span class="ic">◆</span> <span data-i18n="navNews">News feed</span></a>
   </div>
   <div class="nav-label" data-i18n="navLearn">Learn</div>
   <div class="nav">
@@ -175,13 +193,13 @@
 <main class="main">
 
   <!-- DASHBOARD -->
-  <section class="page" id="dashboard">
+  <section class="page active" id="dashboard">
     <h2 class="page-title" data-i18n="dashTitle">PE investor dashboard</h2>
     <p class="page-sub" data-i18n="dashSub">Public comps, IPO status, platform/product depth, and diligence notes in one view.</p>
     <div class="note" data-i18n="dashNote">Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.</div>
     <div class="metrics">
-      <div class="metric"><div class="v">6</div><div class="l" data-i18n="dashMetric1">Public / IPO-traded comps tracked</div></div>
-      <div class="metric"><div class="v">8</div><div class="l" data-i18n="dashMetric2">Private AI-native targets</div></div>
+      <div class="metric"><div class="v">19</div><div class="l" data-i18n="dashMetric1">Companies and strategic comps tracked</div></div>
+      <div class="metric"><div class="v">9</div><div class="l" data-i18n="dashMetric2">Private AI-native targets</div></div>
       <div class="metric"><div class="v">Phase III</div><div class="l" data-i18n="dashMetric3">Most advanced AI-originated drug stage</div></div>
       <div class="metric"><div class="v">Lilly</div><div class="l" data-i18n="dashMetric4">Most active strategic buyer/partner</div></div>
     </div>
@@ -200,7 +218,7 @@
   </section>
 
   <!-- NEWS -->
-  <section class="page active" id="news">
+  <section class="page" id="news">
     <h2 class="page-title" data-i18n="newsTitle">AI drug &amp; healthcare — news feed</h2>
     <p class="page-sub" data-i18n="newsSub">Most recent first. Refreshed by the daily update task.</p>
     <div class="metrics">
@@ -434,6 +452,34 @@ const companies = [
   rel:"Powers Lilly ($1B lab), Roche (AI factory) and many AI-native startups.",
   thesis:"Infrastructure winner and signal source, but valuation is driven by broad AI demand rather than biotech alone.",
   src:[["Bio-IT World — NVIDIA","https://www.bio-itworld.com/news/2026/01/12/nvidia-bets-big-on-ai-driven-drug-discovery--physical-ai--and-a--1-billion-eli-lilly-partnership"]]},
+ {name:"Formation Bio",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.formation.bio/",score:68,valuation:"Late-stage private; valuation not publicly verified",lane:"AI-enabled clinical development",fund:"$372M Series D (Jun 2024); roughly $615M total reported",focus:"AI-native pharma focused on acquiring or partnering drug assets and accelerating clinical development rather than only discovering molecules.",
+  pipeline:"Multi-asset clinical portfolio built through in-licensing and acquisition; asset-level economics and trial execution are the central underwriting questions.",
+  products:"Technology-enabled clinical development platform spanning trial design, operations and data workflows.",
+  models:"AI agents and predictive development tools applied to clinical execution.",
+  rel:"Series D included a16z and Sanofi; has worked with Sanofi and OpenAI on AI-enabled drug development workflows.",
+  thesis:"Distinctive buy-and-build model with nearer-term clinical assets; diligence should separate platform efficiency from asset-selection risk and contingent licensing economics.",
+  src:[["Formation Bio pressroom","https://www.formation.bio/press"],["Series D announcement","https://www.prnewswire.com/news-releases/formation-bio-secures-372mm-series-d-funding-to-grow-drug-pipeline-and-continue-expanding-ai-driven-drug-development-platform-302182347.html"]]},
+ {name:"AQEMIA",country:"France",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://aqemia.com/",score:71,valuation:"Private; valuation not disclosed",lane:"Physics + AI simulation",fund:"€60M Series A completed (Jan 2024)",focus:"Paris-based techbio combining statistical mechanics, quantum-inspired physics and generative AI to design small molecules.",
+  pipeline:"Proprietary therapeutic pipeline with emphasis on oncology and small-molecule programs; clinical maturity remains early.",
+  products:"Physics-led generative drug-design platform for hit generation and lead optimization.",
+  models:"Generative AI coupled with free-energy and physics calculations.",
+  rel:"European venture-backed platform; the €60M Series A was built in two €30M tranches.",
+  thesis:"One of Europe’s more differentiated physics-native platforms; validate wet-lab cycle time, owned-asset progress and economics versus fee-for-service discovery work.",
+  src:[["AQEMIA news","https://aqemia.com/news/page/2"],["Series A announcement","https://www.businesswire.com/news/home/20240129209892/en/AQEMIA-Boosts-Series-A-Funding-to-%E2%82%AC60M-to-Accelerate-on-its-Proprietary-Therapeutic-Pipeline"]]},
+ {name:"Genesis Therapeutics",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.genesistherapeutics.ai/",score:69,valuation:"Private; valuation not disclosed",lane:"Generative chemistry",fund:"$200M Series B (Aug 2023)",focus:"Small-molecule drug discovery using molecular AI to explore difficult chemical and protein-target space.",
+  pipeline:"Internally generated small-molecule programs; public disclosure remains limited relative to the capital raised.",
+  products:"GEMS — Genesis Exploration of Molecular Space.",
+  models:"3D molecular generation and predictive models for potency, selectivity and drug-like properties.",
+  rel:"Series B was led by a major institutional syndicate and positioned the company to advance AI-generated candidates toward clinical testing.",
+  thesis:"Well-capitalized molecular-AI platform; key diligence gaps are program-level disclosure, time to IND and evidence that GEMS produces differentiated chemistry.",
+  src:[["Genesis news","https://www.genesis.ml/news?0f5053d2_page=3"],["Series B announcement","https://www.businesswire.com/news/home/20230821419353/en/Genesis-Therapeutics-Closes-Oversubscribed-%24200-Million-Series-B"]]},
+ {name:"Cradle",country:"Netherlands / Switzerland",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.cradle.bio/",score:73,valuation:"Private; valuation not disclosed",lane:"Protein design",fund:"$73M Series B (Nov 2024); over $100M total",focus:"Enterprise generative-AI software for protein engineering, with a wet-lab feedback loop and a SaaS-like customer model.",
+  pipeline:"Customer programs span antibodies, peptides, vaccines and enzymes; Cradle generally enables partner pipelines rather than owning drug assets.",
+  products:"AI protein-engineering platform with guided design rounds, reporting and organization-specific models.",
+  models:"Generative protein models refined using customer experimental data and Cradle’s Amsterdam wet lab.",
+  rel:"Customers and partners include major biopharma; Bayer announced a three-year antibody collaboration in Jan 2026 and Lundbeck added a CNS biologics partnership in Jun 2026.",
+  thesis:"Attractive picks-and-shovels/SaaS profile with lower binary clinical risk; diligence should test recurring revenue, gross margin, data segregation and dependence on services-heavy implementation.",
+  src:[["Cradle Series B","https://www.cradle.bio/blog/series-b"],["Bayer collaboration","https://www.cradle.bio/blog/bayer-collaboration"],["Lundbeck partnership","https://www.cradle.bio/blog/lundbeck"]]},
  {name:"Google DeepMind",country:"UK / USA",type:"Infrastructure",stage:"Part of Alphabet",ticker:"NASDAQ: GOOGL / GOOG",ipo:"Alphabet IPO Aug 19 2004",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/GOOGL",score:50,valuation:"Part of Alphabet; AI biology is a small piece",lane:"Structure foundation models",fund:"Alphabet-funded",focus:"Research lab whose protein-structure work underpins the structure-model lane.",
   pipeline:"N/A — research; commercialized via Isomorphic Labs.",
   products:"AlphaFold 1/2/3.",
@@ -528,6 +574,10 @@ const companyZh = {
   models:"BioNeMo 模型族：蛋白、RNA 结构、分子合成、毒性预测（2026 更新）。",
   rel:"支持 Lilly（10 亿美元实验室）、Roche（AI factory）和许多 AI 原生初创公司。",
   thesis:"基础设施赢家和行业信号源，但估值由广义 AI 需求驱动，而非生物科技单一因素。"},
+ "Formation Bio":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"后期私有公司；公开资料未核实估值",lane:"AI 赋能临床开发",fund:"2024年6月完成 3.72 亿美元 D 轮；报道累计融资约 6.15 亿美元",focus:"AI 原生制药公司，重点是收购或合作引入药物资产并加速临床开发，而不仅是发现新分子。",pipeline:"通过授权引进和收购建立多资产临床管线；单项资产经济权益和试验执行是核心承销问题。",products:"覆盖试验设计、运营和数据流程的技术化临床开发平台。",models:"用于临床执行的 AI agent 和预测型开发工具。",rel:"D 轮投资方包括 a16z 和 Sanofi；曾与 Sanofi、OpenAI 合作开展 AI 药物开发流程。",thesis:"具有差异化的“收购资产 + 加速开发”模式和较近临床价值；需区分平台效率、资产选择风险及授权或有付款。"},
+ "AQEMIA":{country:"法国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；估值未披露",lane:"物理 + AI 模拟",fund:"2024年1月完成 6,000 万欧元 A 轮",focus:"总部位于巴黎，将统计力学、量子启发物理和生成式 AI 结合，用于设计小分子。",pipeline:"自有治疗管线重点覆盖肿瘤和小分子项目；临床成熟度仍较早。",products:"用于 hit 发现和 lead 优化的物理驱动生成式药物设计平台。",models:"生成式 AI 结合自由能和物理计算。",rel:"欧洲风险资本支持的平台；6,000 万欧元 A 轮由两笔 3,000 万欧元融资组成。",thesis:"欧洲较有差异化的物理原生平台之一；需验证湿实验循环速度、自有资产进展，以及服务型发现业务的经济质量。"},
+ "Genesis Therapeutics":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；估值未披露",lane:"生成式化学",fund:"2023年8月完成 2 亿美元 B 轮",focus:"使用分子 AI 探索困难化学空间和蛋白靶点的小分子药物发现公司。",pipeline:"自有小分子项目；相对于融资规模，公开披露的项目细节仍有限。",products:"GEMS（Genesis Exploration of Molecular Space）。",models:"用于效力、选择性和成药性的三维分子生成与预测模型。",rel:"B 轮由大型机构投资者组成的财团支持，资金用于推动 AI 生成候选药物走向临床。",thesis:"资本充足的分子 AI 平台；关键尽调缺口包括项目级披露、IND 时间以及 GEMS 能否产生差异化化学结构。"},
+ "Cradle":{country:"荷兰 / 瑞士",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；估值未披露",lane:"蛋白设计",fund:"2024年11月完成 7,300 万美元 B 轮；累计融资超过 1 亿美元",focus:"面向企业的生成式 AI 蛋白工程软件，结合湿实验反馈闭环和类似 SaaS 的客户模式。",pipeline:"客户项目覆盖抗体、肽、疫苗和酶；Cradle 通常赋能合作方管线，而不是自己持有药物资产。",products:"包含引导式设计轮次、报告和组织专属模型的 AI 蛋白工程平台。",models:"使用客户实验数据和阿姆斯特丹湿实验室数据迭代的生成式蛋白模型。",rel:"客户和合作方包括多家大型生物制药公司；Bayer 于 2026年1月宣布三年抗体合作，Lundbeck 于 2026年6月新增 CNS 生物药合作。",thesis:"具有吸引力的“卖铲子”/SaaS 属性和较低二元临床风险；需验证经常性收入、毛利率、数据隔离及实施服务依赖。"},
  "Google DeepMind":{country:"英国 / 美国",type:"基础设施",stage:"Alphabet 旗下",ipo:"Alphabet 于 2004年8月19日 IPO",quote:"刷新实时股价",valuation:"Alphabet 旗下；AI 生物只是其中一小部分",lane:"结构基础模型",fund:"Alphabet 支持",focus:"研究实验室，其蛋白结构工作支撑结构模型赛道。",
   pipeline:"不适用：研究业务；通过 Isomorphic Labs 商业化。",
   products:"AlphaFold 1/2/3。",
@@ -618,17 +668,17 @@ const glossaryZh = [
 
 const I18N = {
   en: {
-    ownerStatus:"Owner controls · local HTML · data snapshot Jul 10 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
-    updated:"Work Station · updated Jul 10 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
+    ownerStatus:"Private markets workstation · data snapshot Jul 15 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
+    updated:"Investment Workstation · updated Jul 15 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
     sideFoot:"Snapshot — figures move fast. Ask Codex/AI to refresh public data before investment decisions.",
     dashTitle:"PE investor dashboard", dashSub:"Public comps, IPO status, platform/product depth, and diligence notes in one view.", dashNote:"Static HTML cannot keep live stock prices by itself. The table stores a dated snapshot plus direct quote links; refresh prices before IC materials or term-sheet work.",
-    dashMetric1:"Public / IPO-traded comps tracked", dashMetric2:"Private AI-native targets", dashMetric3:"Most advanced AI-originated drug stage", dashMetric4:"Most active strategic buyer/partner",
+    dashMetric1:"Companies and strategic comps tracked", dashMetric2:"Private AI-native targets", dashMetric3:"Most advanced AI-originated drug stage", dashMetric4:"Most active strategic buyer/partner",
     investScreen:"Investability screen", diligenceLens:"PE diligence lens", watch1Title:"Best near-term public comp", watch1Body:"Recursion: liquid pure-play, but clinical execution and cash burn matter more than platform narrative.", watch2Title:"Best late-stage AI-originated asset", watch2Body:"Insilico: Rentosertib in Phase III for IPF; check trial geography, endpoints, and partner economics.", watch3Title:"Strategic acquirer signal", watch3Body:"Lilly, Roche, Novartis and Bayer deals validate platforms, but milestone-heavy deal values can overstate near-term economics.", watch4Title:"Exit timing", watch4Body:"Private names need clear clinical proof or platform revenue. IPO windows are open but selective for biotech.", watchlistPriorities:"Watchlist priorities",
     newsTitle:"AI drug & healthcare — news feed", newsSub:"Most recent first. Refreshed by the daily update task.", newsMetric1:"AI drug-discovery market (2026)", newsMetric2:"AI-originated programs in clinic", newsMetric3:"AI molecule Phase I success (vs ~52% historical)", newsMetric4:"Full FDA approvals yet (first expected 2026–27)",
     overviewTitle:"What is AI drug discovery?", overviewSub:"The concept, the problem, and why it's happening now.", overviewOneTitle:"In one line", overviewOneBody:"Using machine learning and generative AI to find, design, and test new medicines faster and cheaper than traditional trial-and-error lab work.", overviewConceptTitle:"The concept", overviewProblem:"The problem", overviewProblemBody:"A traditional drug takes ~10–15 years and often over $1–2 billion, and ~90% of candidates fail in clinical trials.", overviewIdea:"The core idea", overviewIdeaBody:"Biology produces huge datasets (genomes, proteins, cell images, chemical libraries). AI learns the patterns to predict which molecules will work — replacing much slow physical screening with computation.", overviewPayoff:"The payoff", overviewPayoffBody:"Higher hit rates and compressed timelines — early data shows 80–90% Phase I success vs the ~52% historical average.", overviewWhyNow:"Why now (2024–26)", overviewWhyNowBody:"Three things converged: protein-structure prediction (AlphaFold 3), generative molecule/protein models (RFdiffusion, Chemistry42), and cheap GPU compute at scale (NVIDIA + Lilly, Roche…).",
     pipelineTitle:"What it includes — the pipeline", pipelineSub:"Where AI plugs into the six stages of making a drug.", stage1:"STAGE 1", stage1Title:"Target identification", stage1Body:"Find the biological \"lever\" of a disease (usually a protein/gene). AI mines genomic & disease data. e.g. Insilico's PandaOmics.", stage2:"STAGE 2", stage2Title:"Hit discovery", stage2Body:"Virtual screening scans huge compound libraries computationally instead of testing millions physically.", stage3:"STAGE 3", stage3Title:"Lead optimization", stage3Body:"Refine candidates for potency, safety & drug-like properties. Generative AI designs new molecules. e.g. Chemistry42, RFdiffusion.", stage4:"STAGE 4", stage4Title:"Preclinical (ADMET)", stage4Body:"Predict absorption, metabolism & toxicity to kill bad candidates early. FDA now piloting an AI liver-injury (DILI) predictor.", stage5:"STAGE 5", stage5Title:"Clinical trials", stage5Body:"AI helps design trials, recruit patients, pick biomarkers & predict outcomes — the 2026 proving ground.", stage6:"STAGE 6", stage6Title:"Manufacturing", stage6Body:"Digital twins & AI optimize production and formulation (e.g., Roche/NVIDIA AI factory).",
     lanesTitle:"The main technical lanes", lanesSub:"Different bets on how AI best finds drugs — and who leads each.", lane1Title:"Structure foundation models", lane1Body:"Predict 3D protein/molecule structures & how they bind (AlphaFold-style). <b>Leaders:</b> Isomorphic Labs (IsoDDE), Chai (Chai-1), Boltz (open-source).", lane2Title:"Biology data / phenomics", lane2Body:"Run massive automated cell/lab experiments and learn from the images & readouts. <b>Leaders:</b> Recursion, insitro, Eikon.", lane3Title:"Generative chemistry", lane3Body:"Design new molecules from scratch to hit a target. <b>Leaders:</b> Insilico Medicine (Chemistry42), Iambic (NeuralPLexer).", lane4Title:"Protein design", lane4Body:"Build entirely new proteins/binders. <b>Leaders:</b> Xaira (RFdiffusion), Generate:Biomedicines.", lane5Title:"Physics + AI simulation", lane5Body:"Combine quantum/physics simulation with ML for accuracy. <b>Leader:</b> XtalPi.", lane6Title:"Big pharma + compute", lane6Body:"Giants buying GPU capacity & partnering with AI-natives. <b>Leaders:</b> Eli Lilly (+NVIDIA), Roche (+NVIDIA), Novartis (+Isomorphic).",
-    companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 10, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.",
+    companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 15, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.",
     allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
     relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
     chatTitle:"AI chat / owner edit bar", chatSub:"Use this page as the website's command center: ask for updates, draft new company entries, and save local notes.", chatWelcome:"I am a local demo assistant inside this HTML. To avoid using the site owner's tokens, each viewer can connect their own AI endpoint or embed another chatbot from the panel on the right.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use a server endpoint or external chatbot link. Do not paste private API keys into a public HTML page.", aiModeLabel:"Chat mode", aiModeDemo:"Local demo replies", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Notes autosave to localStorage. Static websites cannot truly self-update unless connected to a backend, CMS, GitHub workflow, or hosted database.",
@@ -643,17 +693,17 @@ const I18N = {
     chatDomain:"A domain cannot be guaranteed forever automatically. The practical setup is a 10-year registration with auto-renew, registrar lock, a backup payment method, and hosting tied to GitHub/Sites/Netlify/Vercel with scheduled data refresh."
   },
   zh: {
-    ownerStatus:"站点管理 · 本地 HTML · 数据快照 2026年7月10日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
-    updated:"工作站 · 2026年7月10日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
+    ownerStatus:"私募市场工作站 · 数据快照 2026年7月15日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
+    updated:"投资工作站 · 2026年7月15日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
     sideFoot:"数据变化很快。投资决策前请让 Codex/AI 刷新公开数据。",
     dashTitle:"PE 投资人仪表盘", dashSub:"把公开可比公司、IPO 状态、产品/平台深度和尽调备注放在同一页面。", dashNote:"静态 HTML 不能自动保持实时股价。表格保存的是日期快照和报价链接；用于投委会材料或条款清单前请刷新价格。",
-    dashMetric1:"已追踪公开 / IPO 可比公司", dashMetric2:"私有 AI 原生标的", dashMetric3:"AI 原生药物最高临床阶段", dashMetric4:"最活跃战略买方 / 合作方",
+    dashMetric1:"已追踪公司和战略可比标的", dashMetric2:"私有 AI 原生标的", dashMetric3:"AI 原生药物最高临床阶段", dashMetric4:"最活跃战略买方 / 合作方",
     investScreen:"可投资性筛选", diligenceLens:"PE 尽调视角", watch1Title:"近期最佳公开可比", watch1Body:"Recursion：流动性较好的纯 AI 药物发现标的，但临床执行和现金消耗比平台叙事更重要。", watch2Title:"最成熟 AI 原生临床资产", watch2Body:"Insilico：Rentosertib 已进入 IPF 三期；需核查试验地区、终点设计和合作方经济权益。", watch3Title:"战略收购/合作信号", watch3Body:"Lilly、Roche、Novartis 和 Bayer 的交易验证了平台价值，但里程碑总额可能高估近期现金价值。", watch4Title:"退出节奏", watch4Body:"私有公司需要明确临床验证或平台收入。IPO 窗口已打开，但生物科技市场仍然很挑剔。", watchlistPriorities:"重点观察名单",
     newsTitle:"AI 药物与医疗健康新闻流", newsSub:"按时间倒序排列。可通过每日更新任务刷新。", newsMetric1:"AI 药物发现市场规模（2026）", newsMetric2:"进入临床的 AI 原生项目", newsMetric3:"AI 分子 I 期成功率（历史均值约 52%）", newsMetric4:"完整 FDA 批准数量（首个预计 2026–27）",
     overviewTitle:"什么是 AI 药物发现？", overviewSub:"概念、痛点，以及为什么现在进入关键窗口。", overviewOneTitle:"一句话解释", overviewOneBody:"用机器学习和生成式 AI 更快、更低成本地发现、设计和测试新药，减少传统反复试错的实验流程。", overviewConceptTitle:"核心概念", overviewProblem:"行业痛点", overviewProblemBody:"传统新药研发通常需要约 10–15 年，成本常超过 10–20 亿美元，并且约 90% 的候选药物会在临床阶段失败。", overviewIdea:"核心思路", overviewIdeaBody:"生物学产生大量数据（基因组、蛋白、细胞图像、化合物库）。AI 学习其中规律，预测哪些分子可能有效，用计算替代一部分缓慢的物理筛选。", overviewPayoff:"潜在价值", overviewPayoffBody:"提高命中率并压缩研发周期。早期数据显示 AI 分子 I 期成功率可达 80–90%，高于约 52% 的历史均值。", overviewWhyNow:"为什么是现在（2024–26）", overviewWhyNowBody:"三件事同时成熟：蛋白结构预测（AlphaFold 3）、生成式分子/蛋白模型（RFdiffusion、Chemistry42），以及大规模低成本 GPU 算力（NVIDIA + Lilly、Roche 等）。",
     pipelineTitle:"AI 覆盖的新药研发流程", pipelineSub:"AI 在六个制药阶段中的作用位置。", stage1:"阶段 1", stage1Title:"靶点发现", stage1Body:"寻找疾病的生物“杠杆”（通常是蛋白或基因）。AI 挖掘基因组和疾病数据，例如 Insilico 的 PandaOmics。", stage2:"阶段 2", stage2Title:"Hit 发现", stage2Body:"虚拟筛选用计算方式扫描大量化合物库，而不是把数百万分子都做实体实验。", stage3:"阶段 3", stage3Title:"Lead 优化", stage3Body:"优化候选物的效力、安全性和成药性。生成式 AI 可设计新分子，例如 Chemistry42、RFdiffusion。", stage4:"阶段 4", stage4Title:"临床前（ADMET）", stage4Body:"预测吸收、代谢和毒性，更早淘汰差候选物。FDA 也在试点评估 AI 药物性肝损伤（DILI）预测工具。", stage5:"阶段 5", stage5Title:"临床试验", stage5Body:"AI 帮助设计试验、招募患者、选择生物标志物和预测结果，是 2026 年的重要验证场。", stage6:"阶段 6", stage6Title:"生产制造", stage6Body:"数字孪生和 AI 优化生产、制剂和放大工艺，例如 Roche/NVIDIA AI factory。",
     lanesTitle:"主要技术赛道", lanesSub:"不同公司押注 AI 发现药物的不同路径，以及各赛道代表玩家。", lane1Title:"结构基础模型", lane1Body:"预测蛋白/分子的 3D 结构及其结合方式（AlphaFold 路线）。<b>代表：</b>Isomorphic Labs (IsoDDE)、Chai (Chai-1)、Boltz（开源）。", lane2Title:"生物数据 / 表型组学", lane2Body:"运行大规模自动化细胞/实验室实验，从图像和读数中学习规律。<b>代表：</b>Recursion、insitro、Eikon。", lane3Title:"生成式化学", lane3Body:"从零设计能够命中靶点的新分子。<b>代表：</b>Insilico Medicine (Chemistry42)、Iambic (NeuralPLexer)。", lane4Title:"蛋白设计", lane4Body:"构建全新的蛋白或结合体。<b>代表：</b>Xaira (RFdiffusion)、Generate:Biomedicines。", lane5Title:"物理 + AI 模拟", lane5Body:"结合量子/物理模拟与机器学习，提高预测准确性。<b>代表：</b>XtalPi。", lane6Title:"大药企 + 算力", lane6Body:"大型药企购买 GPU 算力并与 AI 原生公司合作。<b>代表：</b>Eli Lilly (+NVIDIA)、Roche (+NVIDIA)、Novartis (+Isomorphic)。",
-    companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月10日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。",
+    companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月15日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。",
     allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
     relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
     chatTitle:"AI 对话 / 站点编辑栏", chatSub:"把这里作为网站指挥中心：请求更新、草拟新公司条目、保存本地备注。", chatWelcome:"我是这个 HTML 里的本地演示助手。为了不消耗站点所有者的 token，每个访问者都可以在右侧连接自己的 AI 接口，或嵌入另一个聊天机器人。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用后端接口或外部聊天机器人链接。不要把私密 API key 粘贴到公开 HTML 页面里。", aiModeLabel:"聊天模式", aiModeDemo:"本地演示回复", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"备注会自动保存在本浏览器 localStorage。静态网站若不连接后端、CMS、GitHub 工作流或托管数据库，无法真正自我更新。",
@@ -719,7 +769,7 @@ function labelValue(value){
   if(currentLang!=='zh') return value;
   const maps={
     "AI-native":"AI 原生公司","Startup":"初创公司","AI + physics":"AI + 物理","Big pharma":"大型药企","Infrastructure":"基础设施",
-    "UK":"英国","USA":"美国","Hong Kong / China":"香港 / 中国","China":"中国","Switzerland":"瑞士","UK / USA":"英国 / 美国",
+    "UK":"英国","USA":"美国","Hong Kong / China":"香港 / 中国","China":"中国","Switzerland":"瑞士","UK / USA":"英国 / 美国","France":"法国","Netherlands / Switzerland":"荷兰 / 瑞士",
     "Private":"私有","IPO (NASDAQ: RXRX)":"已上市（NASDAQ: RXRX）","IPO (HKEX: 3696)":"已上市（HKEX: 3696）","IPO (Feb 2026)":"已 IPO（2026年2月）","IPO (2026)":"已 IPO（2026）","IPO (HKEX: 2228)":"已上市（HKEX: 2228）","Public (NYSE: LLY)":"上市（NYSE: LLY）","Public (SIX/OTC)":"上市（SIX/OTC）","Public (NYSE: NVS)":"上市（NYSE: NVS）","Public (NASDAQ: NVDA)":"上市（NASDAQ: NVDA）","Part of Alphabet":"Alphabet 旗下"
   };
   return maps[value]||value;
