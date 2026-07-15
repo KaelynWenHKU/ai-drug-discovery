@@ -56,8 +56,8 @@ on public.company_edits for delete
 to authenticated
 using (public.is_workspace_editor());
 
--- After each collaborator has signed in once with a magic link, add them here.
--- Replace both examples with real emails, then run this statement:
+-- Add approved editors only in Supabase SQL Editor, not in this public repository.
+-- Example:
 -- insert into public.editor_allowlist (email) values
 --   ('you@example.com'),
 --   ('mentor@example.com')
