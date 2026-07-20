@@ -148,6 +148,25 @@
   .stagegrid{gap:1px;background:var(--line)}.stage{border-radius:0;background:var(--card);padding:18px}.stage .n{font-size:9px;letter-spacing:.12em}.stage .t{font:600 13px "IBM Plex Sans","Noto Sans SC",sans-serif;color:var(--ink)}
   .smallbtn,.promptbtn,.chatinput button{border-radius:2px}.smallbtn.primary,.chatinput button{background:var(--ink);border-color:var(--ink)}.msg{border-radius:2px}.msg.you{background:var(--ink)}
   .official-link{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:4px 8px;border:1px solid #b7c3bc;color:var(--green);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;vertical-align:2px}.official-link:hover{background:#e2ece6;border-color:#7d9e8f}.official-link:after{content:"↗";font-size:10px}
+  .vault{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+  .vault-intro{font-size:12px;color:var(--muted);margin:4px 0 12px;line-height:1.55}
+  .vault-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .vault textarea,.vault input,.vault select{width:100%;border:1px solid var(--line);border-radius:2px;padding:9px;font:12px/1.55 "IBM Plex Sans","Noto Sans SC",sans-serif;background:#fffdfa}
+  .vault textarea{min-height:84px;resize:vertical}
+  .vault-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+  .vault-status{font-size:12px;color:var(--muted);margin:6px 0 10px}
+  .vault-status.ok{color:var(--green);font-weight:600}
+  .vault-list{display:grid;gap:10px;margin-top:10px}
+  .vault-item{border:1px solid var(--line);background:#fffdfa;padding:12px 13px;border-left:3px solid #c5a75e}
+  .vault-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .vault-name{font:600 14px/1.3 "IBM Plex Sans","Noto Sans SC",sans-serif;color:var(--ink)}
+  .vault-meta{font-size:11px;color:var(--muted);margin-top:4px}
+  .vault-tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .vault-tag{font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:3px 7px;border:1px solid #ccd4cd;background:#eef2ee;color:#49655a}
+  .vault-body{font-size:12px;color:#34423d;line-height:1.6}
+  .vault-similar{margin-top:8px;font-size:12px}
+  .vault-similar b{color:var(--ink)}
+  .vault-empty{font-size:12px;color:var(--muted);padding:10px 0}
   .team-panel{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}.team-panel h3{margin-bottom:5px}.team-status{font-size:12px;color:var(--muted);margin:7px 0 12px;line-height:1.5}.team-status.ok{color:var(--green);font-weight:600}.team-form{display:none}.team-form.active{display:block}.team-form textarea{width:100%;min-height:100px;border:1px solid var(--line);border-radius:2px;padding:9px;font:12px/1.55 "IBM Plex Sans","Noto Sans SC",sans-serif;background:#fffdfa;resize:vertical}.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.team-panel .smallbtn[disabled]{opacity:.45;cursor:not-allowed}.team-divider{height:1px;background:var(--line);margin:13px 0}
   @media(max-width:900px){.sidebar{width:230px}.main{margin-left:230px}.ownerbar{left:230px}.invest-grid{grid-template-columns:1fr}}
   @media(max-width:720px){.sidebar{width:100%;position:static}.main{margin-left:0;padding:28px 18px}.ownerbar{position:static}.page:before{margin-top:10px}}
@@ -169,7 +188,7 @@
 <nav class="sidebar">
   <div class="brand">
     <h1>AI Drug Discovery</h1>
-    <span id="upd" data-i18n="updated">Investment Workstation · updated Jul 19 2026</span>
+    <span id="upd" data-i18n="updated">Investment Workstation · updated Jul 20 2026</span>
   </div>
   <div class="nav-label" data-i18n="navDaily">Daily</div>
   <div class="nav">
@@ -341,6 +360,44 @@
         <button class="promptbtn" onclick="quickPromptKey('memoPromptText')" data-i18n="promptMemo">Investment memo prompt</button>
         <textarea id="notes" placeholder="Owner notes are saved in this browser only."></textarea>
         <div class="mini" data-i18n="notesHelp">Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.</div>
+        <div class="vault">
+          <h3 data-i18n="vaultTitle">Shared startup research vault</h3>
+          <div class="vault-intro" data-i18n="vaultIntro">Capture very new or confidential startup material into the internal shared vault. All approved internal editors see the same entries, closest tracked comps, and AI cross-validation prompts.</div>
+          <input id="vaultEditingId" type="hidden">
+          <div class="vault-grid">
+            <div class="field"><label for="vaultName" data-i18n="vaultName">Startup name</label><input id="vaultName" placeholder="Company name"></div>
+            <div class="field"><label for="vaultCountry" data-i18n="vaultCountry">Country / region</label><input id="vaultCountry" placeholder="USA / China / EU"></div>
+            <div class="field"><label for="vaultStage" data-i18n="vaultStage">Stage</label><select id="vaultStage">
+              <option value="Seed" data-i18n="vaultStageSeed">Seed</option><option value="Series A" data-i18n="vaultStageA">Series A</option><option value="Series B" data-i18n="vaultStageB">Series B</option><option value="Series C+" data-i18n="vaultStageC">Series C+</option><option value="Growth" data-i18n="vaultStageGrowth">Growth</option><option value="Public" data-i18n="vaultStagePublic">Public</option><option value="Unknown" data-i18n="vaultStageUnknown">Unknown</option>
+            </select></div>
+            <div class="field"><label for="vaultLane" data-i18n="vaultLane">Technical lane</label><select id="vaultLane">
+              <option value="Structure foundation models" data-i18n="vaultLane1">Structure foundation models</option>
+              <option value="Biology data / phenomics" data-i18n="vaultLane2">Biology data / phenomics</option>
+              <option value="Generative chemistry" data-i18n="vaultLane3">Generative chemistry</option>
+              <option value="Protein design" data-i18n="vaultLane4">Protein design</option>
+              <option value="Physics + AI simulation" data-i18n="vaultLane5">Physics + AI simulation</option>
+              <option value="AI-enabled clinical development" data-i18n="vaultLane6">AI-enabled clinical development</option>
+              <option value="Infrastructure" data-i18n="vaultLane7">Infrastructure</option>
+              <option value="Other" data-i18n="vaultLaneOther">Other</option>
+            </select></div>
+          </div>
+          <div class="field"><label for="vaultFocus" data-i18n="vaultFocus">What it does</label><textarea id="vaultFocus" placeholder="One-paragraph summary of platform, product, or scientific wedge"></textarea></div>
+          <div class="field"><label for="vaultClaims" data-i18n="vaultClaims">Key claims / PE notes</label><textarea id="vaultClaims" placeholder="Funding claim, model claim, pipeline claim, revenue claim, partner claim, diligence flags..."></textarea></div>
+          <div class="field"><label for="vaultSources" data-i18n="vaultSources">Source links or document notes</label><textarea id="vaultSources" placeholder="Paste URLs, memo excerpts, deck references, partner mentions, founder claims..."></textarea></div>
+          <div class="field"><label for="vaultConfidentiality" data-i18n="vaultConfidentiality">Confidentiality</label><select id="vaultConfidentiality">
+            <option value="Internal only" data-i18n="vaultConf1">Internal only</option><option value="Deal team restricted" data-i18n="vaultConf2">Deal team restricted</option><option value="Can be shared later" data-i18n="vaultConf3">Can be shared later</option>
+          </select></div>
+          <div class="vault-actions">
+            <button class="smallbtn primary" onclick="saveVaultEntry()" data-i18n="vaultSave">Publish to shared vault</button>
+            <button class="smallbtn" onclick="generateVaultPrompt()" data-i18n="vaultPrompt">Draft AI cross-validation prompt</button>
+            <button class="smallbtn" onclick="exportVaultJson()" data-i18n="vaultExport">Export vault JSON</button>
+            <button class="smallbtn" onclick="document.getElementById('vaultImportFile').click()" data-i18n="vaultImport">Import vault JSON</button>
+            <button class="smallbtn" onclick="clearVaultForm()" data-i18n="vaultClear">Clear form</button>
+          </div>
+          <input id="vaultImportFile" type="file" accept="application/json" style="display:none">
+          <div class="vault-status" id="vaultStatus" data-i18n="vaultStatusIdle">No shared startup intake loaded yet.</div>
+          <div id="vaultList" class="vault-list"></div>
+        </div>
         <div class="team-panel">
           <h3 data-i18n="teamEditorTitle">Team data editor</h3>
           <div class="team-status" id="teamStatus" data-i18n="teamEditorIntro">Connect with your approved editor email to update shared company research.</div>
@@ -448,13 +505,13 @@ let companies = [
   rel:"Bayer drug-discovery collaboration. Raised >$100M oversubscribed (Nov 2025).",
   thesis:"Compelling private generative-chemistry candidate; focus diligence on IND speed, translational quality, and Bayer economics.",
   src:[["Iambic — $100M round","https://www.iambic.ai/post/iambic-raises-over-100-million"]]},
- {name:"Chai Discovery",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.chaidiscovery.com/",score:69,valuation:"Private; Lilly access deal supports platform value",lane:"Structure foundation models",fund:"Backed incl. Lilly access deal",focus:"Foundation models for biomolecular structure prediction; therapeutics emerging.",
+ {name:"Chai Discovery",country:"USA",type:"Startup",stage:"Private",ticker:"Private",ipo:"No IPO yet",quote:"N/A",quoteUrl:"https://www.chaidiscovery.com/",score:69,valuation:"Private; $3.8B valuation in $400M Series C announced Jul 14 2026",lane:"Structure foundation models",fund:"$400M Series C (Jul 14 2026) after earlier Lilly access economics",focus:"Foundation models for biomolecular structure prediction; therapeutics emerging.",
   pipeline:"Primarily a model/platform company; early therapeutic work.",
   products:"Chai-1 (multimodal foundation model for proteins, small molecules, DNA, RNA, glycosylation); Chai-2.",
   models:"Chai-1 / Chai-2 structure-prediction foundation models (Chai-1 open-sourced).",
-  rel:"Eli Lilly partnership (Jan 2026) — mid-eight-figure annual access fee to deploy Chai models.",
+  rel:"Eli Lilly partnership (Jan 2026) — mid-eight-figure annual access fee to deploy Chai models. New deals: Novartis collaboration announced Jul 15 2026 to use Chai's frontier AI platform for drug discovery, and argenx collaboration announced Jul 13 2026 for antibody discovery.",
   thesis:"Potentially attractive picks-and-shovels model; underwriting should separate software-like access revenue from drug ownership upside.",
-  src:[["Chai-lab (GitHub)","https://github.com/chaidiscovery/chai-lab"],["Contrary Research","https://research.contrary.com/company/chai-discovery"]]},
+  src:[["Chai Discovery — Series C","https://www.chaidiscovery.com/news/chai-discovery-announces-400-million-series-c-at-3-8-billion-valuation"],["Chai Discovery — Novartis collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-novartis-to-collaborate-to-accelerate-drug-discovery-with-ai"],["Chai Discovery — argenx collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-argenx-announce-antibody-discovery-collaboration"],["Chai-lab (GitHub)","https://github.com/chaidiscovery/chai-lab"]]},
  {name:"Eli Lilly",country:"USA",type:"Big pharma",stage:"Public (NYSE: LLY)",ticker:"NYSE: LLY",ipo:"Public since 1952",quote:"Refresh live quote",quoteUrl:"https://finance.yahoo.com/quote/LLY",score:58,valuation:"Mega-cap pharma; AI exposure is strategic, not pure-play",lane:"Big pharma + compute",fund:"$1B NVIDIA lab commitment",focus:"Most aggressive big-pharma AI adopter: own pipeline + heavy AI infrastructure + deals.",
   pipeline:"Broad in-house pipeline (metabolic, oncology, immunology) increasingly AI-supported.",
   products:"LillyPod supercomputer (DGX SuperPOD, 1,016 Blackwell GPUs, Mar 2026); TuneLab AI service.",
@@ -575,11 +632,11 @@ let companyZh = {
   models:"Enchant、NeuralPLexer。",
   rel:"与 Bayer 合作进行药物发现。2025年11月完成超过 1 亿美元超额认购融资。",
   thesis:"有吸引力的私有生成式化学标的；重点尽调 IND 速度、转化质量和 Bayer 合作经济权益。"},
- "Chai Discovery":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；Lilly 访问协议支持平台价值",lane:"结构基础模型",fund:"有 Lilly 访问协议等背书",focus:"生物分子结构预测基础模型；治疗业务正在形成。",
+ "Chai Discovery":{country:"美国",type:"初创公司",stage:"私有",ipo:"尚未 IPO",quote:"不适用",valuation:"私有公司；2026年7月14日宣布 4 亿美元 C 轮融资，对应估值 38 亿美元",lane:"结构基础模型",fund:"2026年7月14日完成 4 亿美元 C 轮；此前另有 Lilly 访问合作经济收益",focus:"生物分子结构预测基础模型；治疗业务正在形成。",
   pipeline:"主要是模型/平台公司；治疗项目仍在早期。",
   products:"Chai-1（面向蛋白、小分子、DNA、RNA、糖基化的多模态基础模型）；Chai-2。",
   models:"Chai-1 / Chai-2 结构预测基础模型（Chai-1 已开源）。",
-  rel:"Eli Lilly 合作（2026年1月），以每年中八位数美元访问费部署 Chai 模型。",
+  rel:"Eli Lilly 合作（2026年1月），以每年中八位数美元访问费部署 Chai 模型。新增合作包括 2026年7月15日与 Novartis 共同加速药物发现，以及 2026年7月13日与 argenx 开展抗体发现合作。",
   thesis:"可能具备“卖铲子”软件收入属性；承销需区分软件访问收入和药物所有权上行。"},
  "Eli Lilly":{country:"美国",type:"大型药企",stage:"上市（NYSE: LLY）",ipo:"1952 年上市",quote:"刷新实时股价",valuation:"超大市值药企；AI 是战略敞口而非纯标的",lane:"大药企 + 算力",fund:"10 亿美元 NVIDIA 实验室承诺",focus:"最积极采用 AI 的大型药企之一：自有管线 + 重 AI 基础设施 + 多项合作。",
   pipeline:"广泛内部管线（代谢、肿瘤、免疫）越来越多地由 AI 支持。",
@@ -640,9 +697,9 @@ const officialSites = {
 };
 
 const news = [
- ["Jul 9 2026","<b>Insilico Medicine</b> issued a positive H1 2026 profit alert, guiding to revenue of about $102.5M-$106.5M and net profit of about $33.5M-$39.5M.",[["Insilico — H1 2026 profit alert","https://insilico.com/news/6f8yhr6sl1-insilico-medicine-releases-positive-prof"]]],
- ["Jul 2 2026","<b>Insilico Medicine</b> announced a Takeda discovery collaboration with about $60M in initiation/near-term payments, up to about $600M total value, and tiered royalties.",[["Insilico — Takeda collaboration","https://insilico.com/news/4ifuiaal01-insilico-medicine-announces-collaboratio"]]],
- ["Jul 7 2026","<b>Insilico Medicine</b> initiated a Phase III trial of Rentosertib (ISM001-055), its AI-designed TNIK inhibitor for idiopathic pulmonary fibrosis — a milestone for AI-discovered drugs.",[["Insilico — Phase III news","https://insilico.com/news/xmjsn4l091-insilico-initiates-phase-iii-clinical-tr"]]],
+ ["Jul 15 2026","<b>Chai Discovery</b> and <b>Novartis</b> announced a collaboration to use Chai's frontier AI platform to accelerate drug discovery.",[["Chai Discovery — Novartis collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-novartis-to-collaborate-to-accelerate-drug-discovery-with-ai"]]],
+ ["Jul 14 2026","<b>Chai Discovery</b> announced a $400M Series C at a $3.8B valuation, giving the structure-model platform a much larger financing base.",[["Chai Discovery — Series C","https://www.chaidiscovery.com/news/chai-discovery-announces-400-million-series-c-at-3-8-billion-valuation"]]],
+ ["Jul 13 2026","<b>Chai Discovery</b> and <b>argenx</b> announced an antibody-discovery collaboration, extending Chai's model deployment into partner-led therapeutics work.",[["Chai Discovery — argenx collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-argenx-announce-antibody-discovery-collaboration"]]],
  ["Jun 30 2026","<b>Anthropic</b> announced it will begin developing drugs of its own — an AI company entering therapeutics directly.",[["STAT News","https://www.statnews.com/2026/06/30/anthropic-ai-drug-development/"]]],
  ["Jun 2026","At <b>BIO 2026</b>, AI drug discovery reached clinical proof-of-concept milestones, with Chinese AI-native players prominent.",[["TechTimes","https://www.techtimes.com/articles/319136/20260626/ai-drug-discovery-reaches-clinical-proof-bio-2026-china-beat-biosecure-act-science.htm"]]],
  ["May 2026","<b>Isomorphic Labs</b> closed a $2.1B Series B (Thrive-led). <b>Roche</b> launched an NVIDIA-powered AI factory (2,176 GPUs across US & Europe).",[["Roche–NVIDIA","https://intuitionlabs.ai/articles/roche-nvidia-ai-factory-glp-1-digital-twins"]]],
@@ -652,9 +709,9 @@ const news = [
 ];
 
 const newsZh = [
- ["2026年7月9日","<b>Insilico Medicine</b> 发布 2026 年上半年盈利预喜，预计收入约 1.025 亿至 1.065 亿美元，净利润约 3,350 万至 3,950 万美元。",[["Insilico — H1 2026 profit alert","https://insilico.com/news/6f8yhr6sl1-insilico-medicine-releases-positive-prof"]]],
- ["2026年7月2日","<b>Insilico Medicine</b> 宣布与 Takeda 开展 AI 药物发现合作，启动费/近期付款约 6,000 万美元，总交易价值最高约 6 亿美元，并附带分级版税。",[["Insilico — Takeda collaboration","https://insilico.com/news/4ifuiaal01-insilico-medicine-announces-collaboratio"]]],
- ["2026年7月7日","<b>Insilico Medicine</b> 启动 Rentosertib（ISM001-055）III 期临床试验。该药是用于特发性肺纤维化的 AI 设计 TNIK 抑制剂，也是 AI 发现药物的重要里程碑。",[["Insilico — Phase III news","https://insilico.com/news/xmjsn4l091-insilico-initiates-phase-iii-clinical-tr"]]],
+ ["2026年7月15日","<b>Chai Discovery</b> 与 <b>Novartis</b> 宣布合作，将使用 Chai 的前沿 AI 平台加速药物发现。",[["Chai Discovery — Novartis collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-novartis-to-collaborate-to-accelerate-drug-discovery-with-ai"]]],
+ ["2026年7月14日","<b>Chai Discovery</b> 宣布完成 4 亿美元 C 轮融资，对应估值 38 亿美元，使其结构模型平台具备更强资金基础。",[["Chai Discovery — Series C","https://www.chaidiscovery.com/news/chai-discovery-announces-400-million-series-c-at-3-8-billion-valuation"]]],
+ ["2026年7月13日","<b>Chai Discovery</b> 与 <b>argenx</b> 宣布开展抗体发现合作，把 Chai 的模型部署进一步延伸到合作方主导的治疗研发。",[["Chai Discovery — argenx collaboration","https://www.chaidiscovery.com/news/chai-discovery-and-argenx-announce-antibody-discovery-collaboration"]]],
  ["2026年6月30日","<b>Anthropic</b> 宣布将开始自主开发药物，意味着一家 AI 公司直接进入治疗药物研发。",[["STAT News","https://www.statnews.com/2026/06/30/anthropic-ai-drug-development/"]]],
  ["2026年6月","在 <b>BIO 2026</b> 上，AI 药物发现进入临床概念验证阶段，中国 AI 原生公司表现突出。",[["TechTimes","https://www.techtimes.com/articles/319136/20260626/ai-drug-discovery-reaches-clinical-proof-bio-2026-china-beat-biosecure-act-science.htm"]]],
  ["2026年5月","<b>Isomorphic Labs</b> 完成 21 亿美元 B 轮融资（Thrive 领投）。<b>Roche</b> 启动由 NVIDIA 支持的 AI factory，在美国和欧洲部署 2,176 块 GPU。",[["Roche–NVIDIA","https://intuitionlabs.ai/articles/roche-nvidia-ai-factory-glp-1-digital-twins"]]],
@@ -725,8 +782,8 @@ const glossaryZh = [
 
 const I18N = {
   en: {
-    ownerStatus:"Private markets workstation · data snapshot Jul 19 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
-    updated:"Investment Workstation · updated Jul 19 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
+    ownerStatus:"Private markets workstation · data snapshot Jul 20 2026", ownerDashboard:"Investor dashboard", ownerChat:"AI chat / update", ownerExport:"Export page",
+    updated:"Investment Workstation · updated Jul 20 2026", navDaily:"Daily", navDashboard:"Investor dashboard", navNews:"News feed", navLearn:"Learn", navOverview:"Overview / 101", navPipeline:"The pipeline", navLanes:"Technical lanes", navTrack:"Track", navCompanies:"Companies", navRelationships:"Relationships", navChat:"AI chat / edit", navGlossary:"Glossary",
     sideFoot:"Snapshot — figures move fast. Ask Codex/AI to refresh public data before investment decisions.",
     dashTitle:"PE investor dashboard", dashSub:"Public comps, IPO status, platform/product depth, and diligence notes in one view.", dashNote:"Data policy · Company, financing, clinical and market fields are reviewed every day at 08:30 HKT. Every material claim retains a direct source link and dated context for IC use.",
     dashMetric1:"Companies and strategic comps tracked", dashMetric2:"Private AI-native targets", dashMetric3:"Most advanced AI-originated drug stage", dashMetric4:"Most active strategic buyer/partner",
@@ -735,10 +792,11 @@ const I18N = {
     overviewTitle:"What is AI drug discovery?", overviewSub:"The concept, the problem, and why it's happening now.", overviewOneTitle:"In one line", overviewOneBody:"Using machine learning and generative AI to find, design, and test new medicines faster and cheaper than traditional trial-and-error lab work.", overviewConceptTitle:"The concept", overviewProblem:"The problem", overviewProblemBody:"A traditional drug takes ~10–15 years and often over $1–2 billion, and ~90% of candidates fail in clinical trials.", overviewIdea:"The core idea", overviewIdeaBody:"Biology produces huge datasets (genomes, proteins, cell images, chemical libraries). AI learns the patterns to predict which molecules will work — replacing much slow physical screening with computation.", overviewPayoff:"The payoff", overviewPayoffBody:"Higher hit rates and compressed timelines — early data shows 80–90% Phase I success vs the ~52% historical average.", overviewWhyNow:"Why now (2024–26)", overviewWhyNowBody:"Three things converged: protein-structure prediction (AlphaFold 3), generative molecule/protein models (RFdiffusion, Chemistry42), and cheap GPU compute at scale (NVIDIA + Lilly, Roche…).",
     pipelineTitle:"What it includes — the pipeline", pipelineSub:"Where AI plugs into the six stages of making a drug.", stage1:"STAGE 1", stage1Title:"Target identification", stage1Body:"Find the biological \"lever\" of a disease (usually a protein/gene). AI mines genomic & disease data. e.g. Insilico's PandaOmics.", stage2:"STAGE 2", stage2Title:"Hit discovery", stage2Body:"Virtual screening scans huge compound libraries computationally instead of testing millions physically.", stage3:"STAGE 3", stage3Title:"Lead optimization", stage3Body:"Refine candidates for potency, safety & drug-like properties. Generative AI designs new molecules. e.g. Chemistry42, RFdiffusion.", stage4:"STAGE 4", stage4Title:"Preclinical (ADMET)", stage4Body:"Predict absorption, metabolism & toxicity to kill bad candidates early. FDA now piloting an AI liver-injury (DILI) predictor.", stage5:"STAGE 5", stage5Title:"Clinical trials", stage5Body:"AI helps design trials, recruit patients, pick biomarkers & predict outcomes — the 2026 proving ground.", stage6:"STAGE 6", stage6Title:"Manufacturing", stage6Body:"Digital twins & AI optimize production and formulation (e.g., Roche/NVIDIA AI factory).",
     lanesTitle:"The main technical lanes", lanesSub:"Different bets on how AI best finds drugs — and who leads each.", lane1Title:"Structure foundation models", lane1Body:"Predict 3D protein/molecule structures & how they bind (AlphaFold-style). <b>Leaders:</b> Isomorphic Labs (IsoDDE), Chai (Chai-1), Boltz (open-source).", lane2Title:"Biology data / phenomics", lane2Body:"Run massive automated cell/lab experiments and learn from the images & readouts. <b>Leaders:</b> Recursion, insitro, Eikon.", lane3Title:"Generative chemistry", lane3Body:"Design new molecules from scratch to hit a target. <b>Leaders:</b> Insilico Medicine (Chemistry42), Iambic (NeuralPLexer).", lane4Title:"Protein design", lane4Body:"Build entirely new proteins/binders. <b>Leaders:</b> Xaira (RFdiffusion), Generate:Biomedicines.", lane5Title:"Physics + AI simulation", lane5Body:"Combine quantum/physics simulation with ML for accuracy. <b>Leader:</b> XtalPi.", lane6Title:"Big pharma + compute", lane6Body:"Giants buying GPU capacity & partnering with AI-natives. <b>Leaders:</b> Eli Lilly (+NVIDIA), Roche (+NVIDIA), Novartis (+Isomorphic).",
-    companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 19, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.", officialWebsite:"Official site",
+    companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 20, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.", officialWebsite:"Official site",
     allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
     relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
     chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.", teamEditorTitle:"Team data editor", teamEditorIntro:"Sign in with an approved editor email to publish shared company research.", teamEmail:"Editor email", teamSendLink:"Email me a sign-in link", teamSignOut:"Sign out", teamCompany:"Company", teamField:"Research field", teamEnglish:"English", teamPublish:"Publish shared update", editFocus:"Investment overview", editPipeline:"Pipeline", editProducts:"Product / platform", editModels:"Models / technology", editValuation:"Valuation", editFunding:"Funding", editRelationships:"Relationships", editThesis:"PE thesis",
+    vaultTitle:"Shared startup research vault", vaultIntro:"Capture very new or confidential startup material into the internal shared vault. All approved internal editors see the same entries, closest tracked comps, and AI cross-validation prompts.", vaultName:"Startup name", vaultCountry:"Country / region", vaultStage:"Stage", vaultLane:"Technical lane", vaultFocus:"What it does", vaultClaims:"Key claims / PE notes", vaultSources:"Source links or document notes", vaultConfidentiality:"Confidentiality", vaultSave:"Publish to shared vault", vaultPrompt:"Draft AI cross-validation prompt", vaultExport:"Export vault JSON", vaultImport:"Import vault JSON", vaultClear:"Clear form", vaultStatusIdle:"No shared startup intake loaded yet.", vaultEmpty:"No shared startup intake yet.", vaultSimilar:"Closest comps", vaultSaved:"Shared startup intake published.", vaultImported:"Vault JSON imported locally. Publish entries to sync them for the whole team.", vaultImportError:"Could not import the JSON file.", vaultPromptReady:"Cross-validation prompt drafted into the chat box.", vaultNeedName:"Add at least a startup name first.", vaultPrivateNote:"Shared vault stays inside the internal editor workspace.", vaultNeedEditor:"Sign in with an approved internal editor email to use the shared vault.", vaultLoading:"Loading shared startup vault...", vaultLoadError:"Shared startup vault is unavailable until the new Supabase table is created from schema.sql.", vaultStageSeed:"Seed", vaultStageA:"Series A", vaultStageB:"Series B", vaultStageC:"Series C+", vaultStageGrowth:"Growth", vaultStagePublic:"Public", vaultStageUnknown:"Unknown", vaultLane1:"Structure foundation models", vaultLane2:"Biology data / phenomics", vaultLane3:"Generative chemistry", vaultLane4:"Protein design", vaultLane5:"Physics + AI simulation", vaultLane6:"AI-enabled clinical development", vaultLane7:"Infrastructure", vaultLaneOther:"Other", vaultConf1:"Internal only", vaultConf2:"Deal team restricted", vaultConf3:"Can be shared later",
     glossaryTitle:"Glossary", glossarySub:"Plain-language definitions of the key terms.",
     of:"of", companies:"companies", noMatches:"No matches.", sources:"Sources", pipeline:"Pipeline", products:"Products", ticker:"Ticker", ipo:"IPO / listing", valuation:"Valuation view", models:"Models used", funding:"Funding", relationships:"Relationships", thesis:"PE thesis", product:"Product",
     thCompany:"Company", thStock:"Stock / quote", thIpo:"IPO status", thProduct:"Product / platform", thScore:"Score", thThesis:"PE thesis",
@@ -750,8 +808,8 @@ const I18N = {
     chatDomain:"A domain cannot be guaranteed forever automatically. The practical setup is a 10-year registration with auto-renew, registrar lock, a backup payment method, and hosting tied to GitHub/Sites/Netlify/Vercel with scheduled data refresh."
   },
   zh: {
-    ownerStatus:"私募市场工作站 · 数据快照 2026年7月19日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
-    updated:"投资工作站 · 2026年7月19日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
+    ownerStatus:"私募市场工作站 · 数据快照 2026年7月20日", ownerDashboard:"投资仪表盘", ownerChat:"AI 对话 / 更新", ownerExport:"导出页面",
+    updated:"投资工作站 · 2026年7月20日更新", navDaily:"每日", navDashboard:"投资仪表盘", navNews:"新闻流", navLearn:"学习", navOverview:"概览 / 入门", navPipeline:"药物研发流程", navLanes:"技术赛道", navTrack:"追踪", navCompanies:"公司", navRelationships:"关系图谱", navChat:"AI 对话 / 编辑", navGlossary:"术语表",
     sideFoot:"数据变化很快。投资决策前请让 Codex/AI 刷新公开数据。",
     dashTitle:"PE 投资人仪表盘", dashSub:"把公开可比公司、IPO 状态、产品/平台深度和尽调备注放在同一页面。", dashNote:"数据更新政策 · 公司、融资、临床及市场字段每日香港时间 08:30 核验。所有重大信息保留直接来源与日期背景，供投委会材料使用。",
     dashMetric1:"已追踪公司和战略可比标的", dashMetric2:"私有 AI 原生标的", dashMetric3:"AI 原生药物最高临床阶段", dashMetric4:"最活跃战略买方 / 合作方",
@@ -760,10 +818,11 @@ const I18N = {
     overviewTitle:"什么是 AI 药物发现？", overviewSub:"概念、痛点，以及为什么现在进入关键窗口。", overviewOneTitle:"一句话解释", overviewOneBody:"用机器学习和生成式 AI 更快、更低成本地发现、设计和测试新药，减少传统反复试错的实验流程。", overviewConceptTitle:"核心概念", overviewProblem:"行业痛点", overviewProblemBody:"传统新药研发通常需要约 10–15 年，成本常超过 10–20 亿美元，并且约 90% 的候选药物会在临床阶段失败。", overviewIdea:"核心思路", overviewIdeaBody:"生物学产生大量数据（基因组、蛋白、细胞图像、化合物库）。AI 学习其中规律，预测哪些分子可能有效，用计算替代一部分缓慢的物理筛选。", overviewPayoff:"潜在价值", overviewPayoffBody:"提高命中率并压缩研发周期。早期数据显示 AI 分子 I 期成功率可达 80–90%，高于约 52% 的历史均值。", overviewWhyNow:"为什么是现在（2024–26）", overviewWhyNowBody:"三件事同时成熟：蛋白结构预测（AlphaFold 3）、生成式分子/蛋白模型（RFdiffusion、Chemistry42），以及大规模低成本 GPU 算力（NVIDIA + Lilly、Roche 等）。",
     pipelineTitle:"AI 覆盖的新药研发流程", pipelineSub:"AI 在六个制药阶段中的作用位置。", stage1:"阶段 1", stage1Title:"靶点发现", stage1Body:"寻找疾病的生物“杠杆”（通常是蛋白或基因）。AI 挖掘基因组和疾病数据，例如 Insilico 的 PandaOmics。", stage2:"阶段 2", stage2Title:"Hit 发现", stage2Body:"虚拟筛选用计算方式扫描大量化合物库，而不是把数百万分子都做实体实验。", stage3:"阶段 3", stage3Title:"Lead 优化", stage3Body:"优化候选物的效力、安全性和成药性。生成式 AI 可设计新分子，例如 Chemistry42、RFdiffusion。", stage4:"阶段 4", stage4Title:"临床前（ADMET）", stage4Body:"预测吸收、代谢和毒性，更早淘汰差候选物。FDA 也在试点评估 AI 药物性肝损伤（DILI）预测工具。", stage5:"阶段 5", stage5Title:"临床试验", stage5Body:"AI 帮助设计试验、招募患者、选择生物标志物和预测结果，是 2026 年的重要验证场。", stage6:"阶段 6", stage6Title:"生产制造", stage6Body:"数字孪生和 AI 优化生产、制剂和放大工艺，例如 Roche/NVIDIA AI factory。",
     lanesTitle:"主要技术赛道", lanesSub:"不同公司押注 AI 发现药物的不同路径，以及各赛道代表玩家。", lane1Title:"结构基础模型", lane1Body:"预测蛋白/分子的 3D 结构及其结合方式（AlphaFold 路线）。<b>代表：</b>Isomorphic Labs (IsoDDE)、Chai (Chai-1)、Boltz（开源）。", lane2Title:"生物数据 / 表型组学", lane2Body:"运行大规模自动化细胞/实验室实验，从图像和读数中学习规律。<b>代表：</b>Recursion、insitro、Eikon。", lane3Title:"生成式化学", lane3Body:"从零设计能够命中靶点的新分子。<b>代表：</b>Insilico Medicine (Chemistry42)、Iambic (NeuralPLexer)。", lane4Title:"蛋白设计", lane4Body:"构建全新的蛋白或结合体。<b>代表：</b>Xaira (RFdiffusion)、Generate:Biomedicines。", lane5Title:"物理 + AI 模拟", lane5Body:"结合量子/物理模拟与机器学习，提高预测准确性。<b>代表：</b>XtalPi。", lane6Title:"大药企 + 算力", lane6Body:"大型药企购买 GPU 算力并与 AI 原生公司合作。<b>代表：</b>Eli Lilly (+NVIDIA)、Roche (+NVIDIA)、Novartis (+Isomorphic)。",
-    companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月19日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。", officialWebsite:"官网",
+    companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月20日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。", officialWebsite:"官网",
     allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
     relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
     chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。", teamEditorTitle:"团队数据编辑", teamEditorIntro:"使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。", teamEmail:"编辑者邮箱", teamSendLink:"发送登录链接到邮箱", teamSignOut:"退出登录", teamCompany:"公司", teamField:"研究字段", teamEnglish:"英文", teamPublish:"发布共享更新", editFocus:"投资概览", editPipeline:"管线", editProducts:"产品 / 平台", editModels:"模型 / 技术", editValuation:"估值", editFunding:"融资", editRelationships:"关系", editThesis:"PE 投资观点",
+    vaultTitle:"共享 startup 研究库", vaultIntro:"把最新或保密的 startup 资料放进内部共享 vault。所有获授权的内部编辑看到的是同一份条目、相似可比公司和 AI cross-validation 提示词。", vaultName:"Startup 名称", vaultCountry:"国家 / 地区", vaultStage:"阶段", vaultLane:"技术赛道", vaultFocus:"公司在做什么", vaultClaims:"关键 claim / PE 备注", vaultSources:"来源链接或文档备注", vaultConfidentiality:"保密级别", vaultSave:"发布到共享 vault", vaultPrompt:"生成 AI 交叉验证提示词", vaultExport:"导出 vault JSON", vaultImport:"导入 vault JSON", vaultClear:"清空表单", vaultStatusIdle:"尚未加载共享 startup intake。", vaultEmpty:"暂时还没有共享 startup intake。", vaultSimilar:"最相近可比", vaultSaved:"共享 startup intake 已发布。", vaultImported:"Vault JSON 已导入本地；如需团队共享，请继续发布这些条目。", vaultImportError:"无法导入该 JSON 文件。", vaultPromptReady:"交叉验证提示词已写入聊天框。", vaultNeedName:"请至少先填写 startup 名称。", vaultPrivateNote:"共享 vault 仍然只存在于内部编辑工作区。", vaultNeedEditor:"请先用获授权的内部编辑邮箱登录，才能使用共享 vault。", vaultLoading:"正在加载共享 startup vault...", vaultLoadError:"新的 Supabase 表尚未按 schema.sql 建好，共享 startup vault 暂时不可用。", vaultStageSeed:"种子轮", vaultStageA:"A 轮", vaultStageB:"B 轮", vaultStageC:"C 轮及以后", vaultStageGrowth:"成长阶段", vaultStagePublic:"已上市", vaultStageUnknown:"未知", vaultLane1:"结构基础模型", vaultLane2:"生物数据 / 表型组学", vaultLane3:"生成式化学", vaultLane4:"蛋白设计", vaultLane5:"物理 + AI 模拟", vaultLane6:"AI 赋能临床开发", vaultLane7:"基础设施", vaultLaneOther:"其他", vaultConf1:"仅内部", vaultConf2:"仅限 deal team", vaultConf3:"之后可分享",
     glossaryTitle:"术语表", glossarySub:"关键术语的通俗解释。",
     of:"/", companies:"家公司", noMatches:"没有匹配结果。", sources:"来源", pipeline:"管线", products:"产品", ticker:"股票代码", ipo:"IPO / 上市", valuation:"估值视角", models:"使用模型", funding:"融资", relationships:"合作关系", thesis:"PE 投资观点", product:"产品",
     thCompany:"公司", thStock:"股票 / 报价", thIpo:"IPO 状态", thProduct:"产品 / 平台", thScore:"评分", thThesis:"PE 投资观点",
@@ -795,6 +854,7 @@ function applyLanguage(){
   renderInvestor();
   renderGlossary();
   renderRelationships();
+  renderVaultList();
   applyAiSettings();
 }
 
@@ -949,6 +1009,216 @@ function quickPromptKey(key){
   quickPrompt(tr(key));
 }
 
+let sharedStartupIntakes=[];
+
+function vaultMessage(key, fallback, good=false){
+  const el=document.getElementById('vaultStatus');
+  if(!el) return;
+  el.textContent=key ? tr(key) : fallback;
+  el.classList.toggle('ok',good);
+}
+
+function normalizeTokens(text){
+  return String(text||'')
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fff\s/-]+/g,' ')
+    .split(/\s+/)
+    .filter(token=>token && token.length > 2);
+}
+
+function scoreCompanySimilarity(entry, company){
+  const entryTokens=new Set(normalizeTokens([entry.name,entry.country,entry.stage,entry.lane,entry.focus,entry.claims,entry.sources].join(' ')));
+  const companyTokens=new Set(normalizeTokens([company.name,company.country,company.type,company.stage,company.lane,company.focus,company.pipeline,company.products,company.models,company.rel,company.thesis].join(' ')));
+  let score=0;
+  entryTokens.forEach(token=>{ if(companyTokens.has(token)) score += 1; });
+  if(entry.lane && company.lane===entry.lane) score += 4;
+  if(entry.country && company.country.toLowerCase().includes(String(entry.country).toLowerCase())) score += 2;
+  if(entry.stage && company.stage.toLowerCase().includes(String(entry.stage).toLowerCase())) score += 1;
+  return score;
+}
+
+function topSimilarCompanies(entry, limit=4){
+  return companies
+    .map(company=>({company, score:scoreCompanySimilarity(entry, company)}))
+    .filter(row=>row.score>0)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,limit);
+}
+
+function collectVaultForm(){
+  return {
+    id: document.getElementById('vaultEditingId').value || '',
+    name: document.getElementById('vaultName').value.trim(),
+    country: document.getElementById('vaultCountry').value.trim(),
+    stage: document.getElementById('vaultStage').value,
+    lane: document.getElementById('vaultLane').value,
+    focus: document.getElementById('vaultFocus').value.trim(),
+    claims: document.getElementById('vaultClaims').value.trim(),
+    sources: document.getElementById('vaultSources').value.trim(),
+    confidentiality: document.getElementById('vaultConfidentiality').value,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function fillVaultForm(entry){
+  document.getElementById('vaultEditingId').value=entry.id || '';
+  document.getElementById('vaultName').value=entry.name || '';
+  document.getElementById('vaultCountry').value=entry.country || '';
+  document.getElementById('vaultStage').value=entry.stage || 'Unknown';
+  document.getElementById('vaultLane').value=entry.lane || 'Other';
+  document.getElementById('vaultFocus').value=entry.focus || '';
+  document.getElementById('vaultClaims').value=entry.claims || '';
+  document.getElementById('vaultSources').value=entry.sources || '';
+  document.getElementById('vaultConfidentiality').value=entry.confidentiality || 'Internal only';
+}
+
+function clearVaultForm(silent=false){
+  fillVaultForm({stage:'Unknown',lane:'Other',confidentiality:'Internal only'});
+  if(!silent) vaultMessage('vaultPrivateNote');
+}
+
+async function saveVaultEntry(){
+  const entry=collectVaultForm();
+  if(!entry.name){
+    vaultMessage('vaultNeedName');
+    return;
+  }
+  if(!supabaseClient || !teamSession || !isTeamEditor){
+    vaultMessage('vaultNeedEditor');
+    return;
+  }
+  const row={
+    id: entry.id || undefined,
+    startup_name: entry.name,
+    country_region: entry.country,
+    company_stage: entry.stage,
+    technical_lane: entry.lane,
+    focus_summary: entry.focus,
+    key_claims: entry.claims,
+    source_notes: entry.sources,
+    confidentiality: entry.confidentiality,
+    review_status: 'active',
+    updated_at: new Date().toISOString(),
+    updated_by: teamSession.user.id
+  };
+  const {error}=await supabaseClient.from('startup_intakes').upsert(row);
+  if(error){
+    vaultMessage('vaultLoadError');
+    return;
+  }
+  clearVaultForm(true);
+  vaultMessage('vaultSaved','',true);
+}
+
+function formatVaultDate(iso){
+  const date=new Date(iso);
+  if(Number.isNaN(date.getTime())) return iso || '';
+  return currentLang==='zh'
+    ? `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`
+    : date.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+}
+
+function renderVaultList(){
+  const list=document.getElementById('vaultList');
+  if(!sharedStartupIntakes.length){
+    list.innerHTML=`<div class="vault-empty">${tr('vaultEmpty')}</div>`;
+    return;
+  }
+  list.innerHTML=sharedStartupIntakes.map(entry=>{
+    const similar=topSimilarCompanies(entry);
+    return `<div class="vault-item">
+      <div class="vault-head">
+        <div>
+          <div class="vault-name">${escapeHtml(entry.name)}</div>
+          <div class="vault-meta">${escapeHtml(entry.country || 'N/A')} · ${escapeHtml(entry.stage || 'Unknown')} · ${formatVaultDate(entry.updatedAt)}</div>
+        </div>
+        <button class="smallbtn" onclick="editVaultEntry('${entry.id}')">${currentLang==='zh'?'编辑':'Edit'}</button>
+      </div>
+      <div class="vault-tags">
+        <span class="vault-tag">${escapeHtml(entry.lane || 'Other')}</span>
+        <span class="vault-tag">${escapeHtml(entry.confidentiality || 'Internal only')}</span>
+      </div>
+      <div class="vault-body">${escapeHtml(entry.focus || '')}</div>
+      <div class="vault-similar"><b>${tr('vaultSimilar')}:</b> ${similar.length ? similar.map(item=>`${escapeHtml(item.company.name)} (${item.score})`).join(', ') : 'N/A'}</div>
+    </div>`;
+  }).join('');
+}
+
+function editVaultEntry(id){
+  const entry=sharedStartupIntakes.find(item=>item.id===id);
+  if(!entry) return;
+  fillVaultForm(entry);
+  vaultMessage('vaultPrivateNote');
+}
+
+function buildVaultPrompt(entry){
+  const similar=topSimilarCompanies(entry).map(item=>`${item.company.name}: ${item.company.focus} | lane=${item.company.lane} | thesis=${item.company.thesis}`).join('\n');
+  return [
+    currentLang==='zh' ? '请对以下新 startup 做 PE 视角 cross-validation。' : 'Cross-validate the following new startup from a PE diligence perspective.',
+    currentLang==='zh' ? '要求：1) 只把已验证事实和未验证 claim 分开；2) 找出最相似的已追踪公司；3) 标出需要核查的融资、临床、合作、技术和商业化风险；4) 形成可加入数据库的标准化摘要。' : 'Requirements: 1) separate verified facts from unverified claims; 2) identify the most similar tracked companies; 3) flag funding, clinical, partnership, technical, and commercialization risks; 4) produce a standardized database-ready summary.',
+    '',
+    `Startup: ${entry.name}`,
+    `Country/region: ${entry.country || 'Unknown'}`,
+    `Stage: ${entry.stage || 'Unknown'}`,
+    `Lane: ${entry.lane || 'Other'}`,
+    `Confidentiality: ${entry.confidentiality || 'Internal only'}`,
+    `What it does: ${entry.focus || 'N/A'}`,
+    `Claims / PE notes: ${entry.claims || 'N/A'}`,
+    `Sources / notes: ${entry.sources || 'N/A'}`,
+    '',
+    currentLang==='zh' ? '已追踪相似公司候选：' : 'Closest tracked comps:',
+    similar || 'N/A'
+  ].join('\n');
+}
+
+function generateVaultPrompt(){
+  const entry=collectVaultForm();
+  if(!entry.name){
+    vaultMessage('vaultNeedName');
+    return;
+  }
+  chatText.value=buildVaultPrompt(entry);
+  chatText.focus();
+  vaultMessage('vaultPromptReady','',true);
+}
+
+function exportVaultJson(){
+  const blob=new Blob([JSON.stringify(sharedStartupIntakes,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='ai_drug_discovery_startup_vault.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importVaultJsonFile(file){
+  const reader=new FileReader();
+  reader.onload=event=>{
+    try{
+      const parsed=JSON.parse(String(event.target.result||'[]'));
+      if(!Array.isArray(parsed)) throw new Error('Invalid format');
+      sharedStartupIntakes=parsed.map(entry=>({
+        id: entry.id || '',
+        name: entry.name || entry.startup_name || '',
+        country: entry.country || entry.country_region || '',
+        stage: entry.stage || entry.company_stage || 'Unknown',
+        lane: entry.lane || entry.technical_lane || 'Other',
+        focus: entry.focus || entry.focus_summary || '',
+        claims: entry.claims || entry.key_claims || '',
+        sources: entry.sources || entry.source_notes || '',
+        confidentiality: entry.confidentiality || 'Internal only',
+        updatedAt: entry.updatedAt || entry.updated_at || new Date().toISOString()
+      }));
+      renderVaultList();
+      vaultMessage('vaultImported','',true);
+    }catch(_error){
+      vaultMessage('vaultImportError');
+    }
+  };
+  reader.readAsText(file);
+}
+
 function escapeHtml(text){
   return String(text).replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]));
 }
@@ -1022,7 +1292,7 @@ async function callUserEndpoint(text){
         message:text,
         language:currentLang,
         page:"AI Drug Discovery WorkStation",
-        context:{companies,news,relationships}
+        context:{companies,news,relationships,startupIntakes:sharedStartupIntakes}
       })
     });
     if(!res.ok) throw new Error('HTTP '+res.status);
@@ -1073,6 +1343,13 @@ function chatSend(){
 const savedNotes=localStorage.getItem('aiDrugDiscoveryNotes')||'';
 notes.value=savedNotes;
 notes.addEventListener('input',()=>localStorage.setItem('aiDrugDiscoveryNotes',notes.value));
+document.getElementById('vaultImportFile').addEventListener('change',event=>{
+  const file=event.target.files && event.target.files[0];
+  if(file) importVaultJsonFile(file);
+  event.target.value='';
+});
+renderVaultList();
+clearVaultForm();
 applyAiSettings();
 
 let teamSession=null;
@@ -1111,6 +1388,35 @@ async function loadCompanyEdits(){
   (data||[]).forEach(edit=>{(teamEdits[edit.company_name] ||= {})[edit.field]=edit;});
   render(); renderInvestor(); loadEditInputs();
 }
+async function loadStartupIntakes(){
+  if(!supabaseClient) return;
+  vaultMessage('vaultLoading');
+  const {data,error}=await supabaseClient
+    .from('startup_intakes')
+    .select('id,startup_name,country_region,company_stage,technical_lane,focus_summary,key_claims,source_notes,confidentiality,review_status,updated_at')
+    .order('updated_at',{ascending:false});
+  if(error){
+    sharedStartupIntakes=[];
+    renderVaultList();
+    vaultMessage('vaultLoadError');
+    return;
+  }
+  sharedStartupIntakes=(data||[]).map(entry=>({
+    id: entry.id,
+    name: entry.startup_name,
+    country: entry.country_region,
+    stage: entry.company_stage,
+    lane: entry.technical_lane,
+    focus: entry.focus_summary,
+    claims: entry.key_claims,
+    sources: entry.source_notes,
+    confidentiality: entry.confidentiality,
+    reviewStatus: entry.review_status,
+    updatedAt: entry.updated_at
+  }));
+  renderVaultList();
+  vaultMessage('vaultPrivateNote', '', true);
+}
 async function syncTeamSession(session){
   teamSession=session||null;
   const auth=document.getElementById('teamAuth');
@@ -1119,6 +1425,9 @@ async function syncTeamSession(session){
   if(!teamSession){
     isTeamEditor=false; auth.style.display='block'; user.style.display='none'; form.classList.remove('active');
     teamMessage('',currentLang==='zh'?'使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。':'Sign in with an approved editor email to publish shared company research.');
+    sharedStartupIntakes=[];
+    renderVaultList();
+    vaultMessage('vaultNeedEditor');
     return;
   }
   auth.style.display='none'; user.style.display='block';
@@ -1128,8 +1437,12 @@ async function syncTeamSession(session){
   if(isTeamEditor){
     teamMessage('',currentLang==='zh'?`已登录：${teamSession.user.email}。你可以发布团队共享更新。`:`Signed in as ${teamSession.user.email}. You can publish shared updates.`,true);
     populateTeamCompanies(); loadEditInputs();
+    await loadStartupIntakes();
   }else{
     teamMessage('',currentLang==='zh'?`已登录：${teamSession.user.email}。等待管理员将此邮箱加入编辑权限名单。`:`Signed in as ${teamSession.user.email}. Waiting for an administrator to add this email to the editor allowlist.`);
+    sharedStartupIntakes=[];
+    renderVaultList();
+    vaultMessage('vaultNeedEditor');
   }
 }
 async function initializeSupabase(){
@@ -1141,11 +1454,13 @@ async function initializeSupabase(){
     await syncTeamSession(session);
     await loadCompanyEdits();
     supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>syncTeamSession(session),0);});
-    supabaseClient.channel('company-edits-live')
+    supabaseClient.channel('workspace-shared-data-live')
       .on('postgres_changes',{event:'*',schema:'public',table:'company_edits'},()=>loadCompanyEdits())
+      .on('postgres_changes',{event:'*',schema:'public',table:'startup_intakes'},()=>loadStartupIntakes())
       .subscribe();
   }catch(_error){
     teamMessage('',currentLang==='zh'?'团队编辑器暂时无法连接。请刷新页面后重试。':'The team editor could not connect. Please refresh and try again.');
+    vaultMessage('vaultLoadError');
   }
 }
 async function sendEditorLink(){
