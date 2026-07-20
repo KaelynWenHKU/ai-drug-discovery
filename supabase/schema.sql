@@ -17,8 +17,24 @@ create table if not exists public.company_edits (
   unique (company_name, field)
 );
 
+create table if not exists public.startup_intakes (
+  id uuid primary key default gen_random_uuid(),
+  startup_name text not null,
+  country_region text not null default '',
+  company_stage text not null default 'Unknown',
+  technical_lane text not null default 'Other',
+  focus_summary text not null default '',
+  key_claims text not null default '',
+  source_notes text not null default '',
+  confidentiality text not null default 'Internal only',
+  review_status text not null default 'active' check (review_status in ('active','shortlisted','converted','archived')),
+  updated_at timestamptz not null default now(),
+  updated_by uuid references auth.users(id) on delete set null
+);
+
 alter table public.editor_allowlist enable row level security;
 alter table public.company_edits enable row level security;
+alter table public.startup_intakes enable row level security;
 
 create or replace function public.is_workspace_editor()
 returns boolean
@@ -34,6 +50,15 @@ as $$
 $$;
 
 grant execute on function public.is_workspace_editor() to anon, authenticated;
+
+drop policy if exists "Published company edits are readable by everyone" on public.company_edits;
+drop policy if exists "Allowlisted editors can create company edits" on public.company_edits;
+drop policy if exists "Allowlisted editors can update company edits" on public.company_edits;
+drop policy if exists "Allowlisted editors can remove company edits" on public.company_edits;
+drop policy if exists "Allowlisted editors can read startup intakes" on public.startup_intakes;
+drop policy if exists "Allowlisted editors can create startup intakes" on public.startup_intakes;
+drop policy if exists "Allowlisted editors can update startup intakes" on public.startup_intakes;
+drop policy if exists "Allowlisted editors can remove startup intakes" on public.startup_intakes;
 
 create policy "Published company edits are readable by everyone"
 on public.company_edits for select
@@ -56,9 +81,43 @@ on public.company_edits for delete
 to authenticated
 using (public.is_workspace_editor());
 
+create policy "Allowlisted editors can read startup intakes"
+on public.startup_intakes for select
+to authenticated
+using (public.is_workspace_editor());
+
+create policy "Allowlisted editors can create startup intakes"
+on public.startup_intakes for insert
+to authenticated
+with check (public.is_workspace_editor());
+
+create policy "Allowlisted editors can update startup intakes"
+on public.startup_intakes for update
+to authenticated
+using (public.is_workspace_editor())
+with check (public.is_workspace_editor());
+
+create policy "Allowlisted editors can remove startup intakes"
+on public.startup_intakes for delete
+to authenticated
+using (public.is_workspace_editor());
+
 insert into public.editor_allowlist (email) values
   ('879083084@qq.com'),
   ('kaelynwen5@gmail.com')
 on conflict (email) do nothing;
 
-alter publication supabase_realtime add table public.company_edits;
+do $$
+begin
+  begin
+    alter publication supabase_realtime add table public.company_edits;
+  exception
+    when duplicate_object then null;
+  end;
+  begin
+    alter publication supabase_realtime add table public.startup_intakes;
+  exception
+    when duplicate_object then null;
+  end;
+end
+$$;

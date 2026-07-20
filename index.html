@@ -355,9 +355,13 @@
           <iframe id="embedFrame" class="embed-frame" title="External AI chatbot"></iframe>
         </div>
         <h3 data-i18n="updatePad">Website update pad</h3>
+        <div class="mini" data-i18n="agentOpsNote">Database schema updates are one-time setup steps, not daily work. Use the agent workflows below for recurring research tasks.</div>
         <button class="promptbtn" onclick="quickPromptKey('marketPromptText')" data-i18n="promptMarket">Refresh market data prompt</button>
         <button class="promptbtn" onclick="quickPromptKey('addCompanyPromptText')" data-i18n="promptAdd">Add company prompt</button>
         <button class="promptbtn" onclick="quickPromptKey('memoPromptText')" data-i18n="promptMemo">Investment memo prompt</button>
+        <button class="promptbtn" onclick="quickPrompt(buildDailyAgentPrompt())" data-i18n="promptDailyAgent">Daily refresh agent prompt</button>
+        <button class="promptbtn" onclick="quickPrompt(buildSharedVaultAgentPrompt())" data-i18n="promptVaultAgent">Startup validation agent prompt</button>
+        <button class="promptbtn" onclick="quickPrompt(buildPEProfilePrompt())" data-i18n="promptPEProfile">PE profile agent prompt</button>
         <textarea id="notes" placeholder="Owner notes are saved in this browser only."></textarea>
         <div class="mini" data-i18n="notesHelp">Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.</div>
         <div class="vault">
@@ -390,6 +394,7 @@
           <div class="vault-actions">
             <button class="smallbtn primary" onclick="saveVaultEntry()" data-i18n="vaultSave">Publish to shared vault</button>
             <button class="smallbtn" onclick="generateVaultPrompt()" data-i18n="vaultPrompt">Draft AI cross-validation prompt</button>
+            <button class="smallbtn" onclick="quickPrompt(buildPEProfilePrompt())" data-i18n="vaultPEProfile">Draft PE profile</button>
             <button class="smallbtn" onclick="exportVaultJson()" data-i18n="vaultExport">Export vault JSON</button>
             <button class="smallbtn" onclick="document.getElementById('vaultImportFile').click()" data-i18n="vaultImport">Import vault JSON</button>
             <button class="smallbtn" onclick="clearVaultForm()" data-i18n="vaultClear">Clear form</button>
@@ -795,8 +800,8 @@ const I18N = {
     companiesTitle:"Company tracker", companiesSub:"Search, filter, and click any company to expand pipeline, products, models & relationships.", companiesNote:"Snapshot as of July 20, 2026. Each company lists sources so you can cross-check. Funding and trial figures change fast.", officialWebsite:"Official site",
     allTypes:"All types", allCountries:"All countries", allStages:"All stages", searchPlaceholder:"Search companies, drug, model, focus…",
     relationshipsTitle:"Relationships & cross-checks", relationshipsSub:"How the players connect — spin-outs, deals, and shared model lineages. Useful for validating who really does what.",
-    chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.", teamEditorTitle:"Team data editor", teamEditorIntro:"Sign in with an approved editor email to publish shared company research.", teamEmail:"Editor email", teamSendLink:"Email me a sign-in link", teamSignOut:"Sign out", teamCompany:"Company", teamField:"Research field", teamEnglish:"English", teamPublish:"Publish shared update", editFocus:"Investment overview", editPipeline:"Pipeline", editProducts:"Product / platform", editModels:"Models / technology", editValuation:"Valuation", editFunding:"Funding", editRelationships:"Relationships", editThesis:"PE thesis",
-    vaultTitle:"Shared startup research vault", vaultIntro:"Capture very new or confidential startup material into the internal shared vault. All approved internal editors see the same entries, closest tracked comps, and AI cross-validation prompts.", vaultName:"Startup name", vaultCountry:"Country / region", vaultStage:"Stage", vaultLane:"Technical lane", vaultFocus:"What it does", vaultClaims:"Key claims / PE notes", vaultSources:"Source links or document notes", vaultConfidentiality:"Confidentiality", vaultSave:"Publish to shared vault", vaultPrompt:"Draft AI cross-validation prompt", vaultExport:"Export vault JSON", vaultImport:"Import vault JSON", vaultClear:"Clear form", vaultStatusIdle:"No shared startup intake loaded yet.", vaultEmpty:"No shared startup intake yet.", vaultSimilar:"Closest comps", vaultSaved:"Shared startup intake published.", vaultImported:"Vault JSON imported locally. Publish entries to sync them for the whole team.", vaultImportError:"Could not import the JSON file.", vaultPromptReady:"Cross-validation prompt drafted into the chat box.", vaultNeedName:"Add at least a startup name first.", vaultPrivateNote:"Shared vault stays inside the internal editor workspace.", vaultNeedEditor:"Sign in with an approved internal editor email to use the shared vault.", vaultLoading:"Loading shared startup vault...", vaultLoadError:"Shared startup vault is unavailable until the new Supabase table is created from schema.sql.", vaultStageSeed:"Seed", vaultStageA:"Series A", vaultStageB:"Series B", vaultStageC:"Series C+", vaultStageGrowth:"Growth", vaultStagePublic:"Public", vaultStageUnknown:"Unknown", vaultLane1:"Structure foundation models", vaultLane2:"Biology data / phenomics", vaultLane3:"Generative chemistry", vaultLane4:"Protein design", vaultLane5:"Physics + AI simulation", vaultLane6:"AI-enabled clinical development", vaultLane7:"Infrastructure", vaultLaneOther:"Other", vaultConf1:"Internal only", vaultConf2:"Deal team restricted", vaultConf3:"Can be shared later",
+    chatTitle:"AI research & editor workspace", chatSub:"Use this workspace to analyze companies, draft updates and prepare investment materials.", chatWelcome:"AI research workspace ready. Connect your approved Codex/OpenAI endpoint to analyze the tracked companies, draft updates and prepare investment comparisons.", send:"Send", aiAccessTitle:"AI access", aiSecurityNote:"Use an approved server endpoint or external chatbot link. Never enter a private API key in a browser field.", aiModeLabel:"Chat mode", aiModeDemo:"Research prompt workspace", aiModeApi:"Use my API endpoint", aiModeEmbed:"Embed another chatbot", apiEndpointLabel:"API endpoint URL", embedUrlLabel:"External chatbot URL", saveAiSettings:"Save AI settings", testAiSettings:"Test", clearAiSettings:"Clear", updatePad:"Website update pad", agentOpsNote:"Database schema updates are one-time setup steps, not daily work. Use the agent workflows below for recurring research tasks.", promptMarket:"Refresh market data prompt", promptAdd:"Add company prompt", promptMemo:"Investment memo prompt", promptDailyAgent:"Daily refresh agent prompt", promptVaultAgent:"Startup validation agent prompt", promptPEProfile:"PE profile agent prompt", marketPromptText:"Refresh public stock prices and market caps for RXRX, 3696.HK, 2228.HK, LLY, RHHBY, NVS, NVDA and GOOGL. Return changed fields only.", addCompanyPromptText:"Add a new AI drug discovery company with product, pipeline, IPO status, funding, partnerships, and PE investment thesis.", memoPromptText:"Create an investment memo comparing the top three AI drug discovery opportunities by clinical maturity, valuation, and exit risk.", notesHelp:"Draft notes are saved on this device. Shared-team synchronization becomes available after editor sign-in.", teamEditorTitle:"Team data editor", teamEditorIntro:"Sign in with an approved editor email to publish shared company research.", teamEmail:"Editor email", teamSendLink:"Email me a sign-in link", teamSignOut:"Sign out", teamCompany:"Company", teamField:"Research field", teamEnglish:"English", teamPublish:"Publish shared update", editFocus:"Investment overview", editPipeline:"Pipeline", editProducts:"Product / platform", editModels:"Models / technology", editValuation:"Valuation", editFunding:"Funding", editRelationships:"Relationships", editThesis:"PE thesis",
+    vaultTitle:"Shared startup research vault", vaultIntro:"Capture very new or confidential startup material into the internal shared vault. All approved internal editors see the same entries, closest tracked comps, and AI cross-validation prompts.", vaultName:"Startup name", vaultCountry:"Country / region", vaultStage:"Stage", vaultLane:"Technical lane", vaultFocus:"What it does", vaultClaims:"Key claims / PE notes", vaultSources:"Source links or document notes", vaultConfidentiality:"Confidentiality", vaultSave:"Publish to shared vault", vaultPrompt:"Draft AI cross-validation prompt", vaultPEProfile:"Draft PE profile", vaultExport:"Export vault JSON", vaultImport:"Import vault JSON", vaultClear:"Clear form", vaultStatusIdle:"No shared startup intake loaded yet.", vaultEmpty:"No shared startup intake yet.", vaultSimilar:"Closest comps", vaultSaved:"Shared startup intake published.", vaultImported:"Vault JSON imported locally. Publish entries to sync them for the whole team.", vaultImportError:"Could not import the JSON file.", vaultPromptReady:"Cross-validation prompt drafted into the chat box.", vaultNeedName:"Add at least a startup name first.", vaultPrivateNote:"Shared vault stays inside the internal editor workspace.", vaultNeedEditor:"Sign in with an approved internal editor email to use the shared vault.", vaultLoading:"Loading shared startup vault...", vaultLoadError:"Shared startup vault is unavailable until the new Supabase table is created from schema.sql.", vaultStageSeed:"Seed", vaultStageA:"Series A", vaultStageB:"Series B", vaultStageC:"Series C+", vaultStageGrowth:"Growth", vaultStagePublic:"Public", vaultStageUnknown:"Unknown", vaultLane1:"Structure foundation models", vaultLane2:"Biology data / phenomics", vaultLane3:"Generative chemistry", vaultLane4:"Protein design", vaultLane5:"Physics + AI simulation", vaultLane6:"AI-enabled clinical development", vaultLane7:"Infrastructure", vaultLaneOther:"Other", vaultConf1:"Internal only", vaultConf2:"Deal team restricted", vaultConf3:"Can be shared later",
     glossaryTitle:"Glossary", glossarySub:"Plain-language definitions of the key terms.",
     of:"of", companies:"companies", noMatches:"No matches.", sources:"Sources", pipeline:"Pipeline", products:"Products", ticker:"Ticker", ipo:"IPO / listing", valuation:"Valuation view", models:"Models used", funding:"Funding", relationships:"Relationships", thesis:"PE thesis", product:"Product",
     thCompany:"Company", thStock:"Stock / quote", thIpo:"IPO status", thProduct:"Product / platform", thScore:"Score", thThesis:"PE thesis",
@@ -821,8 +826,8 @@ const I18N = {
     companiesTitle:"公司追踪器", companiesSub:"搜索、筛选并点击公司，查看管线、产品、模型和合作关系。", companiesNote:"截至 2026年7月20日的快照。每家公司都列出来源，便于交叉核查。融资和临床数据变化很快。", officialWebsite:"官网",
     allTypes:"全部类型", allCountries:"全部国家/地区", allStages:"全部阶段", searchPlaceholder:"搜索公司、药物、模型、关注方向…",
     relationshipsTitle:"关系与交叉验证", relationshipsSub:"展示公司之间的孵化、交易和模型谱系关系，帮助判断谁真正做什么。",
-    chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。", teamEditorTitle:"团队数据编辑", teamEditorIntro:"使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。", teamEmail:"编辑者邮箱", teamSendLink:"发送登录链接到邮箱", teamSignOut:"退出登录", teamCompany:"公司", teamField:"研究字段", teamEnglish:"英文", teamPublish:"发布共享更新", editFocus:"投资概览", editPipeline:"管线", editProducts:"产品 / 平台", editModels:"模型 / 技术", editValuation:"估值", editFunding:"融资", editRelationships:"关系", editThesis:"PE 投资观点",
-    vaultTitle:"共享 startup 研究库", vaultIntro:"把最新或保密的 startup 资料放进内部共享 vault。所有获授权的内部编辑看到的是同一份条目、相似可比公司和 AI cross-validation 提示词。", vaultName:"Startup 名称", vaultCountry:"国家 / 地区", vaultStage:"阶段", vaultLane:"技术赛道", vaultFocus:"公司在做什么", vaultClaims:"关键 claim / PE 备注", vaultSources:"来源链接或文档备注", vaultConfidentiality:"保密级别", vaultSave:"发布到共享 vault", vaultPrompt:"生成 AI 交叉验证提示词", vaultExport:"导出 vault JSON", vaultImport:"导入 vault JSON", vaultClear:"清空表单", vaultStatusIdle:"尚未加载共享 startup intake。", vaultEmpty:"暂时还没有共享 startup intake。", vaultSimilar:"最相近可比", vaultSaved:"共享 startup intake 已发布。", vaultImported:"Vault JSON 已导入本地；如需团队共享，请继续发布这些条目。", vaultImportError:"无法导入该 JSON 文件。", vaultPromptReady:"交叉验证提示词已写入聊天框。", vaultNeedName:"请至少先填写 startup 名称。", vaultPrivateNote:"共享 vault 仍然只存在于内部编辑工作区。", vaultNeedEditor:"请先用获授权的内部编辑邮箱登录，才能使用共享 vault。", vaultLoading:"正在加载共享 startup vault...", vaultLoadError:"新的 Supabase 表尚未按 schema.sql 建好，共享 startup vault 暂时不可用。", vaultStageSeed:"种子轮", vaultStageA:"A 轮", vaultStageB:"B 轮", vaultStageC:"C 轮及以后", vaultStageGrowth:"成长阶段", vaultStagePublic:"已上市", vaultStageUnknown:"未知", vaultLane1:"结构基础模型", vaultLane2:"生物数据 / 表型组学", vaultLane3:"生成式化学", vaultLane4:"蛋白设计", vaultLane5:"物理 + AI 模拟", vaultLane6:"AI 赋能临床开发", vaultLane7:"基础设施", vaultLaneOther:"其他", vaultConf1:"仅内部", vaultConf2:"仅限 deal team", vaultConf3:"之后可分享",
+    chatTitle:"AI 研究与编辑工作区", chatSub:"用于分析公司、草拟更新和准备投资材料。", chatWelcome:"AI 研究工作区已就绪。连接获批准的 Codex/OpenAI 后端接口后，可分析已追踪公司、草拟更新并生成投资比较。", send:"发送", aiAccessTitle:"AI 接入", aiSecurityNote:"请使用获批准的后端接口或外部聊天机器人链接，切勿在浏览器输入框中填写私密 API key。", aiModeLabel:"聊天模式", aiModeDemo:"研究提示词工作区", aiModeApi:"使用我的 API 接口", aiModeEmbed:"嵌入其他聊天机器人", apiEndpointLabel:"API 接口 URL", embedUrlLabel:"外部聊天机器人 URL", saveAiSettings:"保存 AI 设置", testAiSettings:"测试", clearAiSettings:"清除", updatePad:"网站更新草稿区", agentOpsNote:"数据库 schema 更新通常只需要做一次，不是每天都要做。日常重复研究请直接用下面的 agent workflow。", promptMarket:"刷新市场数据提示词", promptAdd:"添加公司提示词", promptMemo:"投资备忘录提示词", promptDailyAgent:"每日刷新 agent 提示词", promptVaultAgent:"Startup 验证 agent 提示词", promptPEProfile:"PE profile agent 提示词", marketPromptText:"刷新 RXRX、3696.HK、2228.HK、LLY、RHHBY、NVS、NVDA 和 GOOGL 的公开股价与市值。只返回需要修改的字段。", addCompanyPromptText:"添加一家新的 AI 药物发现公司，包括产品、管线、IPO 状态、融资、合作关系和 PE 投资观点。", memoPromptText:"按照临床成熟度、估值和退出风险，比较前三个 AI 药物发现投资机会并生成投资备忘录。", notesHelp:"草稿备注保存在当前设备；编辑者登录后可启用团队共享同步。", teamEditorTitle:"团队数据编辑", teamEditorIntro:"使用获授权的编辑者邮箱登录后，即可发布共享公司研究内容。", teamEmail:"编辑者邮箱", teamSendLink:"发送登录链接到邮箱", teamSignOut:"退出登录", teamCompany:"公司", teamField:"研究字段", teamEnglish:"英文", teamPublish:"发布共享更新", editFocus:"投资概览", editPipeline:"管线", editProducts:"产品 / 平台", editModels:"模型 / 技术", editValuation:"估值", editFunding:"融资", editRelationships:"关系", editThesis:"PE 投资观点",
+    vaultTitle:"共享 startup 研究库", vaultIntro:"把最新或保密的 startup 资料放进内部共享 vault。所有获授权的内部编辑看到的是同一份条目、相似可比公司和 AI cross-validation 提示词。", vaultName:"Startup 名称", vaultCountry:"国家 / 地区", vaultStage:"阶段", vaultLane:"技术赛道", vaultFocus:"公司在做什么", vaultClaims:"关键 claim / PE 备注", vaultSources:"来源链接或文档备注", vaultConfidentiality:"保密级别", vaultSave:"发布到共享 vault", vaultPrompt:"生成 AI 交叉验证提示词", vaultPEProfile:"生成 PE profile", vaultExport:"导出 vault JSON", vaultImport:"导入 vault JSON", vaultClear:"清空表单", vaultStatusIdle:"尚未加载共享 startup intake。", vaultEmpty:"暂时还没有共享 startup intake。", vaultSimilar:"最相近可比", vaultSaved:"共享 startup intake 已发布。", vaultImported:"Vault JSON 已导入本地；如需团队共享，请继续发布这些条目。", vaultImportError:"无法导入该 JSON 文件。", vaultPromptReady:"交叉验证提示词已写入聊天框。", vaultNeedName:"请至少先填写 startup 名称。", vaultPrivateNote:"共享 vault 仍然只存在于内部编辑工作区。", vaultNeedEditor:"请先用获授权的内部编辑邮箱登录，才能使用共享 vault。", vaultLoading:"正在加载共享 startup vault...", vaultLoadError:"新的 Supabase 表尚未按 schema.sql 建好，共享 startup vault 暂时不可用。", vaultStageSeed:"种子轮", vaultStageA:"A 轮", vaultStageB:"B 轮", vaultStageC:"C 轮及以后", vaultStageGrowth:"成长阶段", vaultStagePublic:"已上市", vaultStageUnknown:"未知", vaultLane1:"结构基础模型", vaultLane2:"生物数据 / 表型组学", vaultLane3:"生成式化学", vaultLane4:"蛋白设计", vaultLane5:"物理 + AI 模拟", vaultLane6:"AI 赋能临床开发", vaultLane7:"基础设施", vaultLaneOther:"其他", vaultConf1:"仅内部", vaultConf2:"仅限 deal team", vaultConf3:"之后可分享",
     glossaryTitle:"术语表", glossarySub:"关键术语的通俗解释。",
     of:"/", companies:"家公司", noMatches:"没有匹配结果。", sources:"来源", pipeline:"管线", products:"产品", ticker:"股票代码", ipo:"IPO / 上市", valuation:"估值视角", models:"使用模型", funding:"融资", relationships:"合作关系", thesis:"PE 投资观点", product:"产品",
     thCompany:"公司", thStock:"股票 / 报价", thIpo:"IPO 状态", thProduct:"产品 / 平台", thScore:"评分", thThesis:"PE 投资观点",
@@ -1007,6 +1012,69 @@ function quickPrompt(text){
 
 function quickPromptKey(key){
   quickPrompt(tr(key));
+}
+
+function buildDailyAgentPrompt(){
+  return [
+    'Act as the internal AI drug discovery website refresh agent.',
+    'Task: review the tracked company set and only surface material changes that matter for PE diligence.',
+    'Requirements:',
+    '1. Check the last 24-72 hours first.',
+    '2. Prioritize direct sources: company IR/newsroom, SEC/HKEX filings, ClinicalTrials.gov, FDA, peer-reviewed papers, official partner announcements.',
+    '3. Separate verified facts from anything still unverified.',
+    '4. Return changed fields only, grouped by company.',
+    '5. Flag any item that should update the website tracker, news feed, valuation note, funding note, pipeline, or relationship mapping.',
+    '6. If no material change exists, say that clearly.',
+    '',
+    'Tracked context is already attached in this workspace.'
+  ].join('\n');
+}
+
+function buildSharedVaultAgentPrompt(){
+  const selectedName=document.getElementById('vaultName').value.trim();
+  const selected=selectedName
+    ? collectVaultForm()
+    : (sharedStartupIntakes[0] || {name:'',country:'',stage:'Unknown',lane:'Other',focus:'',claims:'',sources:'',confidentiality:'Internal only'});
+  const basePrompt=buildVaultPrompt(selected);
+  return [
+    'Act as the internal startup validation agent for our shared PE research vault.',
+    'Task: turn one new startup intake into a cross-validated internal research entry.',
+    'Requirements:',
+    '1. Separate verified facts, management claims, and unresolved diligence questions.',
+    '2. Compare against the closest tracked companies and explain why the comp set is appropriate.',
+    '3. Highlight technical, funding, clinical, partnership, monetization, and exit-risk issues.',
+    '4. Return a standardized PE profile section we can store in our internal database.',
+    '5. Suggest whether the company should remain in the shared vault, be shortlisted, or be promoted into the main company tracker.',
+    '',
+    basePrompt
+  ].join('\n');
+}
+
+function buildPEProfilePrompt(){
+  const selectedName=document.getElementById('vaultName').value.trim();
+  const selected=selectedName
+    ? collectVaultForm()
+    : (sharedStartupIntakes[0] || {name:'',country:'',stage:'Unknown',lane:'Other',focus:'',claims:'',sources:'',confidentiality:'Internal only'});
+  const basePrompt=buildVaultPrompt(selected);
+  return [
+    'Act as the internal PE startup profiling agent for our AI drug discovery database.',
+    'Task: convert this startup intake into a standardized PE profile suitable for internal reuse.',
+    'Output format:',
+    '1. Company snapshot',
+    '2. What the company actually does',
+    '3. Technical lane and differentiated edge',
+    '4. Closest public and private comps',
+    '5. Funding / valuation context',
+    '6. Pipeline or commercialization status',
+    '7. Partnerships and strategic read-through',
+    '8. Verification table: verified facts vs management claims vs open questions',
+    '9. PE diligence view: upside, risks, timing, likely exit path',
+    '10. Recommendation: archive / monitor / prioritize / promote into main tracker',
+    '',
+    'Use concise, database-ready writing. Do not invent facts. Mark uncertainty explicitly.',
+    '',
+    basePrompt
+  ].join('\n');
 }
 
 let sharedStartupIntakes=[];
